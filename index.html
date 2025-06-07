@@ -102,6 +102,13 @@
       border-radius: 50%;
       cursor: pointer;
       z-index: 5;
+      transition: background 0.3s ease;
+    }
+    .slider--btn:hover,
+    .slider--btn:focus {
+      background: rgba(255,255,255,0.3);
+      outline: none;
+      box-shadow: 0 0 8px #fff;
     }
     .slider--btn svg {
       stroke: white;
@@ -168,9 +175,9 @@
   </style>
 </head>
 <body>
-  <div class="background-blur"></div>
+  <div class="background-blur" aria-hidden="true"></div>
 
-  <div class="slider">
+  <div class="slider" role="region" aria-label="3D Voyage Image Slider">
     <button class="slider--btn slider--btn__prev" aria-label="Previous Slide">
       <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
     </button>
@@ -180,28 +187,28 @@
 
     <div class="slides">
       <div class="slide" data-index="0" data-current>
-        <div class="slide__bg" style="background-image: url('slide1.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide1.png');" aria-label="Slide 1" role="img"></div>
       </div>
       <div class="slide" data-index="1" data-next>
-        <div class="slide__bg" style="background-image: url('slide2.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide2.png');" aria-label="Slide 2" role="img"></div>
       </div>
       <div class="slide" data-index="2">
-        <div class="slide__bg" style="background-image: url('slide3.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide3.png');" aria-label="Slide 3" role="img"></div>
       </div>
       <div class="slide" data-index="3">
-        <div class="slide__bg" style="background-image: url('slide4.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide4.png');" aria-label="Slide 4" role="img"></div>
       </div>
       <div class="slide" data-index="4">
-        <div class="slide__bg" style="background-image: url('slide5.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide5.png');" aria-label="Slide 5" role="img"></div>
       </div>
       <div class="slide" data-index="5">
-        <div class="slide__bg" style="background-image: url('slide6.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide6.png');" aria-label="Slide 6" role="img"></div>
       </div>
       <div class="slide" data-index="6">
-        <div class="slide__bg" style="background-image: url('slide7.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide7.png');" aria-label="Slide 7" role="img"></div>
       </div>
       <div class="slide" data-index="7">
-        <div class="slide__bg" style="background-image: url('slide8.png');"></div>
+        <div class="slide__bg" style="background-image: url('slide8.png');" aria-label="Slide 8" role="img"></div>
       </div>
     </div>
 
@@ -219,8 +226,9 @@
     const biasLights = document.querySelectorAll('.bias-light');
     let current = 0;
     const lastIndex = slides.length - 1;
+    let autoSlideInterval;
 
-    // Example colors per slide - you can customize these to match your images
+    // Colors matching the slides
     const slideColors = [
       '#FF6F61', // slide1 dominant color (redish)
       '#4A90E2', // slide2 blueish
@@ -255,7 +263,6 @@
 
       // Update bias lighting colors dynamically
       biasLights.forEach((light, i) => {
-        // To give some color variation among corners:
         const colorIndex = (current + i) % slideColors.length;
         light.style.color = slideColors[colorIndex];
       });
@@ -264,13 +271,44 @@
     btnNext.addEventListener('click', () => {
       const next = current + 1 > lastIndex ? 0 : current + 1;
       updateSlides(next);
+      resetAutoSlide();
     });
+
     btnPrev.addEventListener('click', () => {
       const prev = current - 1 < 0 ? lastIndex : current - 1;
       updateSlides(prev);
+      resetAutoSlide();
     });
 
+    // Keyboard navigation support
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        btnNext.click();
+      } else if (e.key === 'ArrowLeft') {
+        btnPrev.click();
+      }
+    });
+
+    // Auto slide every 5 seconds
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(() => {
+        const next = current + 1 > lastIndex ? 0 : current + 1;
+        updateSlides(next);
+      }, 5000);
+    }
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      startAutoSlide();
+    }
+
+    // Pause auto slide on hover
+    const slider = document.querySelector('.slider');
+    slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    slider.addEventListener('mouseleave', startAutoSlide);
+
+    // Initialize
     updateSlides(current);
+    startAutoSlide();
   </script>
 </body>
 </html>
