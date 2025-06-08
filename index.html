@@ -4,53 +4,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>VFX Ka Otaku | 3D VFX Portfolio</title>
+  <meta name="description" content="Official portfolio site of VFX Ka Otaku – creative animations, VFX, and otaku-themed designs.">
+  <meta name="keywords" content="vfxkaotaku, vfx ka otaku, portfolio, 3d slide, animation, otaku, VFX design, anime portfolio" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     html, body {
       width: 100vw;
-      height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       font-family: sans-serif;
       background: #000;
+      scroll-behavior: smooth;
     }
-
-    .loading-screen {
+    body.portrait-warning::before {
+      content: "Please rotate your phone to landscape mode.";
       position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 100vw;
       height: 100vh;
       background: #000;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
+      font-size: 1.8rem;
       z-index: 9999;
-      overflow: hidden;
+      text-align: center;
+      padding: 20px;
     }
-
-    .loading-video {
-      width: 300px;
-      height: auto;
+    .background-blur {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(40px) brightness(0.6);
+      z-index: 0;
+      transition: background-image 0.5s ease-in-out;
     }
-
     .slider-wrapper {
       position: relative;
       width: 100%;
-      height: 100vh;
+      height: 100dvh;
+      padding: 80px 0;
       perspective: 1500px;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1;
+      touch-action: pan-y;
     }
-
     .slider {
       display: flex;
       align-items: center;
-      justify-content: center;
       position: relative;
       width: 100%;
       height: 100%;
+      justify-content: center;
     }
-
     .slide {
       position: absolute;
       aspect-ratio: 16 / 9;
@@ -65,35 +84,35 @@
       transform: translate(-50%, -48%) scale(0.82);
       transition: transform 0.6s ease, opacity 0.4s ease;
       user-select: none;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
-
     .slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+      pointer-events: none;
+      user-select: none;
     }
-
     .slide.active {
       opacity: 1;
       transform: translate(-50%, -48%) scale(0.92);
       z-index: 2;
     }
-
-    .slide.left,
-    .slide.right {
-      opacity: 1;
-      filter: brightness(0.6) blur(2px);
-      z-index: 1;
-    }
-
     .slide.left {
       transform: translate(calc(-50% - 50vw), -48%) scale(0.8);
+      opacity: 1;
+      z-index: 1;
+      filter: brightness(0.6) blur(2px);
     }
-
     .slide.right {
       transform: translate(calc(-50% + 50vw), -48%) scale(0.8);
+      opacity: 1;
+      z-index: 1;
+      filter: brightness(0.6) blur(2px);
     }
-
     .nav {
       position: absolute;
       top: 50%;
@@ -104,10 +123,8 @@
       z-index: 3;
       user-select: none;
     }
-
     .nav.left { left: 20px; }
     .nav.right { right: 20px; }
-
     #mute-btn {
       position: absolute;
       bottom: 20px;
@@ -122,45 +139,76 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: background 0.3s ease;
     }
-
+    #mute-btn:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
     #mute-btn svg {
       width: 24px;
       height: 24px;
       fill: white;
+      pointer-events: none;
+      user-select: none;
+    }
+    #mute-btn.muted svg {
+      fill: #888;
     }
 
-    #mute-btn.muted svg { fill: #888; }
-
-    @media (max-width: 768px) {
-      .slide { width: 90vw; }
-    }
-
-    .background-blur {
-      position: absolute;
+    /* LOADING ANIMATION + SPLIT SCREEN */
+    #loading-screen {
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      filter: blur(40px) brightness(0.6);
-      z-index: 0;
-      transition: background-image 0.5s ease-in-out;
+      width: 100vw;
+      height: 100dvh;
+      background: black;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    #loading-video {
+      height: 50vh;
+      width: auto;
+      pointer-events: none;
+    }
+    .split-cover {
+      position: fixed;
+      top: 0;
+      width: 50%;
+      height: 100dvh;
+      background: black;
+      z-index: 9998;
+      transition: transform 1s ease-in-out;
+    }
+    .split-left { left: 0; transform: translateX(0%); }
+    .split-right { right: 0; transform: translateX(0%); }
+    .hide-left { transform: translateX(-100%); }
+    .hide-right { transform: translateX(100%); }
+
+    @media (max-width: 768px) {
+      .slide {
+        width: 90vw;
+        height: auto;
+      }
     }
   </style>
 </head>
 <body>
-
-  <div class="loading-screen" id="loadingScreen">
-    <video id="loadingVideo" class="loading-video" autoplay muted loop playsinline>
-      <source src="loading.webm" type="video/webm" />
-    </video>
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <video id="loading-video" src="loading.webm" autoplay muted loop playsinline></video>
   </div>
+  <div class="split-cover split-left" id="left-cover"></div>
+  <div class="split-cover split-right" id="right-cover"></div>
 
+  <!-- BACKGROUND -->
   <div class="background-blur" id="bg-blur"></div>
 
-  <div class="slider-wrapper" id="sliderWrapper" style="display:none;">
+  <!-- SLIDER -->
+  <div class="slider-wrapper">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
       <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
@@ -174,33 +222,32 @@
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
 
-    <button id="mute-btn" class="muted" aria-label="Toggle music">
+    <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
       <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
     </button>
   </div>
 
   <audio id="bg-music" autoplay muted loop>
     <source src="assets/music/upgrade.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
   </audio>
 
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
-    const sliderWrapper = document.getElementById("sliderWrapper");
-    const loadingScreen = document.getElementById("loadingScreen");
-    const loadingVideo = document.getElementById("loadingVideo");
-    const music = document.getElementById("bg-music");
-    const muteBtn = document.getElementById("mute-btn");
-
     let current = 0;
     let isFullscreen = false;
 
     function updateSlider() {
       slides.forEach((slide, index) => {
         slide.classList.remove("active", "left", "right");
-        if (index === current) slide.classList.add("active");
-        else if (index === (current - 1 + slides.length) % slides.length) slide.classList.add("left");
-        else if (index === (current + 1) % slides.length) slide.classList.add("right");
+        if (index === current) {
+          slide.classList.add("active");
+        } else if (index === (current - 1 + slides.length) % slides.length) {
+          slide.classList.add("left");
+        } else if (index === (current + 1) % slides.length) {
+          slide.classList.add("right");
+        }
       });
       bgBlur.style.backgroundImage = `url('${slides[current].querySelector("img").src}')`;
     }
@@ -215,13 +262,65 @@
       updateSlider();
     }
 
-    // Keyboard arrows
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") nextSlide();
-      else if (e.key === "ArrowLeft") prevSlide();
+    window.addEventListener("load", () => {
+      updateSlider();
+
+      const music = document.getElementById("bg-music");
+      const muteBtn = document.getElementById("mute-btn");
+      const loadingScreen = document.getElementById("loading-screen");
+      const leftCover = document.getElementById("left-cover");
+      const rightCover = document.getElementById("right-cover");
+
+      setTimeout(() => {
+        music.play().then(() => {
+          music.muted = false;
+          muteBtn.classList.remove("muted");
+          muteBtn.setAttribute("aria-pressed", "false");
+        }).catch(() => {});
+        leftCover.classList.add("hide-left");
+        rightCover.classList.add("hide-right");
+        setTimeout(() => {
+          loadingScreen.style.display = "none";
+          leftCover.style.display = "none";
+          rightCover.style.display = "none";
+        }, 1000);
+      }, 4000);
+
+      muteBtn.addEventListener("click", () => {
+        music.muted = !music.muted;
+        muteBtn.classList.toggle("muted", music.muted);
+        muteBtn.setAttribute("aria-pressed", music.muted.toString());
+      });
     });
 
-    // Touch swipe
+    function handleOrientation() {
+      document.body.classList.toggle("portrait-warning", window.innerHeight > window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleOrientation);
+    handleOrientation();
+
+    slides.forEach((slide, index) => {
+      slide.addEventListener("click", () => {
+        if (index !== current) return;
+        if (!isFullscreen) {
+          slide.style.position = "fixed";
+          slide.style.top = "50%";
+          slide.style.left = "50%";
+          slide.style.transform = "translate(-50%, -50%) scale(1.1)";
+          slide.style.zIndex = "1000";
+          slide.style.transition = "transform 0.4s ease";
+          document.body.style.overflow = "hidden";
+          isFullscreen = true;
+        } else {
+          slide.removeAttribute("style");
+          updateSlider();
+          document.body.style.overflow = "hidden";
+          isFullscreen = false;
+        }
+      });
+    });
+
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
@@ -230,7 +329,6 @@
       else if (startX - endX > 50) nextSlide();
     });
 
-    // Scroll
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
@@ -240,28 +338,9 @@
       setTimeout(() => wheelLock = false, 600);
     });
 
-    muteBtn.addEventListener("click", () => {
-      music.muted = !music.muted;
-      muteBtn.classList.toggle("muted", music.muted);
-    });
-
-    window.addEventListener("load", () => {
-      updateSlider();
-
-      // Wait for 4.5s then remove loading and show slider
-      setTimeout(() => {
-        loadingScreen.style.transition = "opacity 1s ease";
-        loadingScreen.style.opacity = 0;
-        setTimeout(() => {
-          loadingScreen.remove();
-          sliderWrapper.style.display = "flex";
-          setTimeout(() => {
-            music.muted = false;
-            music.play();
-            muteBtn.classList.remove("muted");
-          }, 300);
-        }, 1000);
-      }, 4500);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") nextSlide();
+      else if (e.key === "ArrowLeft") prevSlide();
     });
   </script>
 </body>
