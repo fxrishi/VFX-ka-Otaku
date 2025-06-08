@@ -61,25 +61,26 @@
     .slide::before {
       content: "";
       position: absolute;
-      width: 60vw;
-      height: 80vh;
+      width: 65vw;
+      height: 85vh;
       background-size: cover;
       background-position: center;
-      filter: blur(20px) brightness(0.6);
+      filter: blur(20px) brightness(0.5);
       border-radius: 2rem;
       z-index: 0;
+      transition: background-image 0.5s ease;
     }
 
     .slide img {
-      width: 60vw;
-      height: 80vh;
+      width: 65vw;
+      height: 85vh;
       object-fit: cover;
       border-radius: 2rem;
       position: relative;
       z-index: 1;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      transition: transform 0.3s ease;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       transform: scale(0.95);
+      transition: transform 0.3s ease;
     }
 
     .nav {
@@ -136,7 +137,7 @@
 
   <script>
     let currentSlide = 0;
-    const totalSlides = 8;
+    const totalSlides = document.querySelectorAll(".slide").length;
     const slider = document.getElementById("slider");
     const slides = document.querySelectorAll(".slide");
 
@@ -145,54 +146,96 @@
 
       slides.forEach((slide, i) => {
         const imgURL = slide.getAttribute("data-img");
-        const pseudo = slide.style;
-
-        // Apply background blur only to active slide
-        slide.style.setProperty('--bg', `url(${imgURL})`);
-        slide.style.zIndex = i === currentSlide ? 1 : 0;
-
         if (i === currentSlide) {
-          slide.classList.add("active");
-          slide.style.setProperty("--blur", `url(${imgURL})`);
-          slide.style.setProperty("--zindex", "1");
-          slide.style.setProperty("z-index", "1");
-          slide.style.setProperty("--before-opacity", "1");
-          slide.querySelector("::before");
+          slide.querySelector("img").style.transform = "scale(0.95)";
+          slide.style.zIndex = 1;
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--img-scale', '0.95');
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--zindex', '1');
+          slide.style.setProperty('--img-scale', '0.95');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--img-scale', '0.95');
+          slide.style.setProperty('--before-opacity', '1');
+
+          // set blur background image
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--img-scale', '0.95');
+          slide.style.setProperty('--zindex', '1');
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+
+          // Set blur background image
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--zindex', '1');
+          slide.style.setProperty('--img-scale', '0.95');
+
+          slide.style.setProperty('--before-opacity', '1');
           slide.style.setProperty('--before-url', `url(${imgURL})`);
           slide.style.setProperty('--before-bg', `url(${imgURL})`);
           slide.style.setProperty('--before-zindex', '0');
-          slide.querySelector("::before").style = `background-image: url(${imgURL});`;
+
+          // This line directly sets ::before bg
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--img-scale', '0.95');
+
+          // Set it visually
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+          slide.style.setProperty('--img-scale', '0.95');
+
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--blur', `url(${imgURL})`);
+          slide.style.setProperty('--before-zindex', '0');
+
+          slide.style.setProperty('--before-bg', `url(${imgURL})`);
+          slide.style.setProperty('--before-url', `url(${imgURL})`);
+          slide.style.setProperty('--before-opacity', '1');
+          slide.style.setProperty('--blur', `url(${imgURL})`);
         } else {
-          slide.classList.remove("active");
+          slide.querySelector("img").style.transform = "scale(0.9)";
         }
 
-        // Set ::before dynamically
-        slide.style.setProperty('--before-url', `url(${imgURL})`);
-        slide.style.setProperty('--before-bg', `url(${imgURL})`);
-        slide.style.setProperty('--before-zindex', '0');
-        slide.style.setProperty('--blur', `url(${imgURL})`);
-        slide.style.setProperty('--zindex', "0");
-        slide.style.setProperty('--before-opacity', "0");
-        slide.style.setProperty('--img-scale', "0.95");
+        slide.style.setProperty('--before-opacity', '0');
+        slide.style.setProperty('--blur', 'none');
       });
 
-      // Manually set current slide's ::before background-image
+      // Only update current slide's ::before
       const activeSlide = slides[currentSlide];
       activeSlide.style.setProperty('--before-opacity', '1');
-      activeSlide.style.setProperty('--zindex', '1');
-      activeSlide.style.setProperty('--img-scale', '0.95');
-      activeSlide.style.setProperty('--before-url', `url(${activeSlide.dataset.img})`);
+      activeSlide.style.setProperty('--blur', `url(${activeSlide.dataset.img})`);
+      activeSlide.querySelector("::before");
       activeSlide.style.setProperty('--before-bg', `url(${activeSlide.dataset.img})`);
-      activeSlide.querySelector("img").style.transform = "scale(0.95)";
-      activeSlide.style.setProperty('--before-zindex', '0');
-
-      // Set ::before bg via JS since pseudo-elements can't access DOM
-      slides.forEach(slide => {
-        const bgImg = slide.dataset.img;
-        slide.style.setProperty('--before-url', `url(${bgImg})`);
-        slide.style.setProperty('--before-bg', `url(${bgImg})`);
-        slide.style.setProperty('--before-opacity', slide === activeSlide ? '1' : '0');
-      });
     }
 
     function nextSlide() {
@@ -205,7 +248,27 @@
       updateSlide();
     }
 
-    // Initial setup
+    // Touch swipe
+    let startX = 0;
+    let endX = 0;
+
+    slider.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    slider.addEventListener('touchmove', (e) => {
+      endX = e.touches[0].clientX;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', () => {
+      if (startX - endX > 50) {
+        nextSlide();
+      } else if (endX - startX > 50) {
+        prevSlide();
+      }
+    });
+
+    // Initial load
     updateSlide();
   </script>
 </body>
