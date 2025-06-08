@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,297 +17,165 @@
       justify-content: center;
       height: 100vh;
       position: relative;
-    }
+    }.background-blur {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('slide1.png');
+  background-size: cover;
+  background-position: center;
+  filter: blur(25px) brightness(0.3);
+  z-index: 0;
+  transition: background-image 0.8s ease;
+}
 
-    .background-blur {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: url('slide1.png');
-      background-size: cover;
-      background-position: center;
-      filter: blur(25px) brightness(0.3);
-      z-index: 0;
-      transition: background-image 0.8s ease;
-    }
+.slider {
+  position: relative;
+  width: 90vw;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  perspective: 1200px;
+  z-index: 2;
+  border-radius: 12px;
+  overflow: visible;
+}
 
-    .slider {
-      position: relative;
-      width: 960px;
-      height: 540px;
-      perspective: 1200px;
-      z-index: 2;
-      border-radius: 12px;
-      overflow: visible;
-    }
+.slides {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease-in-out;
+  border-radius: 12px;
+  overflow: visible;
+}
 
-    .slides {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.8s ease-in-out;
-      border-radius: 12px;
-      overflow: visible;
-    }
+.slide {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.6s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.slide[data-current] {
+  transform: translateX(-50%) translateZ(0) scale(1);
+  opacity: 1;
+  z-index: 3;
+}
+.slide[data-next] {
+  transform: translateX(100%) translateZ(-200px) scale(0.8);
+  opacity: 0.5;
+  z-index: 2;
+}
+.slide[data-previous] {
+  transform: translateX(-200%) translateZ(-200px) scale(0.8);
+  opacity: 0.5;
+  z-index: 2;
+}
 
-    .slide {
-      position: absolute;
-      top: 0; left: 50%;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      transform-origin: center center;
-      opacity: 0;
-      transition: transform 0.8s ease, opacity 0.6s ease;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .slide[data-current] {
-      transform: translateX(-50%) translateZ(0) scale(1);
-      opacity: 1;
-      z-index: 3;
-    }
-    .slide[data-next] {
-      transform: translateX(100%) translateZ(-200px) scale(0.8);
-      opacity: 0.5;
-      z-index: 2;
-    }
-    .slide[data-previous] {
-      transform: translateX(-200%) translateZ(-200px) scale(0.8);
-      opacity: 0.5;
-      z-index: 2;
-    }
+.slide__bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
 
-    .slide__bg {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      pointer-events: none;
-    }
+.slider--btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.1);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.3s ease;
+}
+.slider--btn:hover,
+.slider--btn:focus {
+  background: rgba(255,255,255,0.3);
+  outline: none;
+  box-shadow: 0 0 8px #fff;
+}
+.slider--btn svg {
+  stroke: white;
+  stroke-width: 2;
+  fill: none;
+  width: 24px;
+  height: 24px;
+}
+.slider--btn__prev { left: -50px; }
+.slider--btn__next { right: -50px; }
 
-    .slider--btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.1);
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 5;
-      transition: background 0.3s ease;
-    }
-    .slider--btn:hover,
-    .slider--btn:focus {
-      background: rgba(255,255,255,0.3);
-      outline: none;
-      box-shadow: 0 0 8px #fff;
-    }
-    .slider--btn svg {
-      stroke: white;
-      stroke-width: 2;
-      fill: none;
-      width: 24px;
-      height: 24px;
-    }
-    .slider--btn__prev { left: -60px; }
-    .slider--btn__next { right: -60px; }
+.bias-light {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px currentColor);
+  opacity: 0.7;
+  animation: pulseLight 4s ease-in-out infinite;
+  mix-blend-mode: screen;
+  transition: color 0.8s ease;
+  z-index: 10;
+}
+.bias-top-left {
+  top: -30px; left: -30px;
+  width: 150px; height: 150px;
+  animation-delay: 0s;
+}
+.bias-top-right {
+  top: -30px; right: -30px;
+  width: 130px; height: 130px;
+  animation-delay: 1.2s;
+}
+.bias-bottom-left {
+  bottom: -30px; left: -30px;
+  width: 130px; height: 130px;
+  animation-delay: 2.4s;
+}
+.bias-bottom-right {
+  bottom: -30px; right: -30px;
+  width: 150px; height: 150px;
+  animation-delay: 3.6s;
+}
 
-    /* Bias lighting divs */
-    .bias-light {
-      position: absolute;
-      pointer-events: none;
-      border-radius: 50%;
-      filter: drop-shadow(0 0 8px currentColor);
-      opacity: 0.7;
-      animation: pulseLight 4s ease-in-out infinite;
-      mix-blend-mode: screen;
-      transition: color 0.8s ease;
-      z-index: 10;
-    }
-    /* Four corners with different sizes */
-    .bias-top-left {
-      top: -30px;
-      left: -30px;
-      width: 150px;
-      height: 150px;
-      animation-delay: 0s;
-    }
-    .bias-top-right {
-      top: -30px;
-      right: -30px;
-      width: 130px;
-      height: 130px;
-      animation-delay: 1.2s;
-    }
-    .bias-bottom-left {
-      bottom: -30px;
-      left: -30px;
-      width: 130px;
-      height: 130px;
-      animation-delay: 2.4s;
-    }
-    .bias-bottom-right {
-      bottom: -30px;
-      right: -30px;
-      width: 150px;
-      height: 150px;
-      animation-delay: 3.6s;
-    }
+@keyframes pulseLight {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
 
-    @keyframes pulseLight {
-      0%, 100% {
-        opacity: 0.6;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 0.9;
-        transform: scale(1.1);
-      }
-    }
+@media (max-width: 768px) {
+  .slider--btn__prev { left: -30px; }
+  .slider--btn__next { right: -30px; }
+}
+@media (max-width: 480px) {
+  .slider--btn {
+    width: 32px;
+    height: 32px;
+  }
+  .slider--btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
   </style>
 </head>
-<body>
-  <div class="background-blur" aria-hidden="true"></div>
-
-  <div class="slider" role="region" aria-label="3D Voyage Image Slider">
-    <button class="slider--btn slider--btn__prev" aria-label="Previous Slide">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
-    </button>
-    <button class="slider--btn slider--btn__next" aria-label="Next Slide">
-      <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" /></svg>
-    </button>
-
-    <div class="slides">
-      <div class="slide" data-index="0" data-current>
-        <div class="slide__bg" style="background-image: url('slide1.png');" aria-label="Slide 1" role="img"></div>
-      </div>
-      <div class="slide" data-index="1" data-next>
-        <div class="slide__bg" style="background-image: url('slide2.png');" aria-label="Slide 2" role="img"></div>
-      </div>
-      <div class="slide" data-index="2">
-        <div class="slide__bg" style="background-image: url('slide3.png');" aria-label="Slide 3" role="img"></div>
-      </div>
-      <div class="slide" data-index="3">
-        <div class="slide__bg" style="background-image: url('slide4.png');" aria-label="Slide 4" role="img"></div>
-      </div>
-      <div class="slide" data-index="4">
-        <div class="slide__bg" style="background-image: url('slide5.png');" aria-label="Slide 5" role="img"></div>
-      </div>
-      <div class="slide" data-index="5">
-        <div class="slide__bg" style="background-image: url('slide6.png');" aria-label="Slide 6" role="img"></div>
-      </div>
-      <div class="slide" data-index="6">
-        <div class="slide__bg" style="background-image: url('slide7.png');" aria-label="Slide 7" role="img"></div>
-      </div>
-      <div class="slide" data-index="7">
-        <div class="slide__bg" style="background-image: url('slide8.png');" aria-label="Slide 8" role="img"></div>
-      </div>
-    </div>
-
-    <!-- Bias lighting -->
-    <div class="bias-light bias-top-left"></div>
-    <div class="bias-light bias-top-right"></div>
-    <div class="bias-light bias-bottom-left"></div>
-    <div class="bias-light bias-bottom-right"></div>
-  </div>
-
-  <script>
-    const slides = document.querySelectorAll('.slide');
-    const btnNext = document.querySelector('.slider--btn__next');
-    const btnPrev = document.querySelector('.slider--btn__prev');
-    const biasLights = document.querySelectorAll('.bias-light');
-    let current = 0;
-    const lastIndex = slides.length - 1;
-    let autoSlideInterval;
-
-    // Colors matching the slides
-    const slideColors = [
-      '#FF6F61', // slide1 dominant color (redish)
-      '#4A90E2', // slide2 blueish
-      '#F5A623', // slide3 orange
-      '#50E3C2', // slide4 teal
-      '#B8E986', // slide5 green
-      '#D0021B', // slide6 deep red
-      '#9013FE', // slide7 purple
-      '#F8E71C', // slide8 yellow
-    ];
-
-    function updateSlides(newIndex) {
-      current = newIndex;
-      slides.forEach((slide, i) => {
-        slide.removeAttribute('data-current');
-        slide.removeAttribute('data-next');
-        slide.removeAttribute('data-previous');
-
-        if (i === current) {
-          slide.setAttribute('data-current', '');
-        } else if (i === (current + 1 > lastIndex ? 0 : current + 1)) {
-          slide.setAttribute('data-next', '');
-        } else if (i === (current - 1 < 0 ? lastIndex : current - 1)) {
-          slide.setAttribute('data-previous', '');
-        }
-      });
-
-      // Update background blur to match current slide
-      const blurBg = document.querySelector('.background-blur');
-      const newBg = slides[current].querySelector('.slide__bg').style.backgroundImage;
-      blurBg.style.backgroundImage = newBg;
-
-      // Update bias lighting colors dynamically
-      biasLights.forEach((light, i) => {
-        const colorIndex = (current + i) % slideColors.length;
-        light.style.color = slideColors[colorIndex];
-      });
-    }
-
-    btnNext.addEventListener('click', () => {
-      const next = current + 1 > lastIndex ? 0 : current + 1;
-      updateSlides(next);
-      resetAutoSlide();
-    });
-
-    btnPrev.addEventListener('click', () => {
-      const prev = current - 1 < 0 ? lastIndex : current - 1;
-      updateSlides(prev);
-      resetAutoSlide();
-    });
-
-    // Keyboard navigation support
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') {
-        btnNext.click();
-      } else if (e.key === 'ArrowLeft') {
-        btnPrev.click();
-      }
-    });
-
-    // Auto slide every 5 seconds
-    function startAutoSlide() {
-      autoSlideInterval = setInterval(() => {
-        const next = current + 1 > lastIndex ? 0 : current + 1;
-        updateSlides(next);
-      }, 5000);
-    }
-    function resetAutoSlide() {
-      clearInterval(autoSlideInterval);
-      startAutoSlide();
-    }
-
-    // Pause auto slide on hover
-    const slider = document.querySelector('.slider');
-    slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-    slider.addEventListener('mouseleave', startAutoSlide);
-
-    // Initialize
-    updateSlides(current);
-    startAutoSlide();
-  </script>
-</body>
-</html>
+<body
