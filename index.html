@@ -5,15 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Slider with Loading and Particle Burst</title>
 <style>
+  /* Reset and base */
   * {
     margin: 0; padding: 0; box-sizing: border-box;
   }
-  body, html {
-    width: 100vw; height: 100vh;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* prevent scrollbars */
     background: #111;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
   /* Loading overlay */
   #loading-overlay {
     position: fixed;
@@ -36,33 +39,35 @@
     z-index: 10000;
   }
 
-  /* Slider styles */
+  /* Slider container */
   .slider {
     position: relative;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+    display: none; /* hidden initially */
     justify-content: center;
+    align-items: center;
+    overflow: hidden; /* no scrollbar */
   }
+
+  /* Slides */
   .slide {
     position: absolute;
     width: 80vw;
     height: 60vh;
+    border-radius: 12px;
     background-size: cover;
     background-position: center;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(255 255 255 / 0.2);
     opacity: 0;
     transition: opacity 0.5s ease;
+    box-shadow: 0 0 15px rgba(255 255 255 / 0.2);
   }
   .slide.active {
     opacity: 1;
     position: relative;
   }
 
-  /* Arrow buttons */
+  /* Arrow buttons (no scrollbar) */
   .slider--btn {
     position: absolute;
     top: 50%;
@@ -74,10 +79,10 @@
     cursor: pointer;
     border-radius: 50%;
     color: white;
-    font-size: 24px;
+    font-size: 30px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     user-select: none;
     transition: background 0.3s ease;
     z-index: 10;
@@ -95,24 +100,24 @@
 </head>
 <body>
 
-<!-- Loading overlay -->
+<!-- Loading overlay with video -->
 <div id="loading-overlay">
   <video id="loading-video" src="loading.webm" autoplay muted playsinline></video>
   <canvas id="particle-canvas"></canvas>
 </div>
 
 <!-- Slider -->
-<div class="slider" id="slider" style="display:none;">
+<div class="slider" id="slider">
   <div class="slide active" style="background-image: url('slide1.jpg')"></div>
   <div class="slide" style="background-image: url('slide2.jpg')"></div>
   <div class="slide" style="background-image: url('slide3.jpg')"></div>
-  
+
   <button class="slider--btn slider--btn__prev" aria-label="Previous Slide">&#8592;</button>
   <button class="slider--btn slider--btn__next" aria-label="Next Slide">&#8594;</button>
 </div>
 
 <script>
-  // Particle Burst code (same as before)
+  // Particle burst code
   const loadingOverlay = document.getElementById('loading-overlay');
   const loadingVideo = document.getElementById('loading-video');
   const canvas = document.getElementById('particle-canvas');
