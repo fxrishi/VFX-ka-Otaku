@@ -25,7 +25,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('slide1.png');
+      background-image: url('slide1.png'); /* default background */
       background-size: cover;
       background-position: center;
       filter: blur(25px) brightness(0.3);
@@ -41,6 +41,7 @@
       perspective: 1200px;
       z-index: 2;
       border-radius: 12px;
+      overflow: visible;
     }
 
     .slides {
@@ -50,6 +51,7 @@
       transform-style: preserve-3d;
       transition: transform 0.8s ease-in-out;
       border-radius: 12px;
+      overflow: visible;
     }
 
     .slide {
@@ -62,6 +64,7 @@
       opacity: 0;
       transition: transform 0.8s ease, opacity 0.6s ease;
       border-radius: 12px;
+      overflow: hidden;
     }
 
     .slide[data-current] {
@@ -194,10 +197,10 @@
       <div class="slide"><div class="slide__bg" style="background-image: url('slide8.png');"></div></div>
     </div>
 
-    <button class="slider--btn slider--btn__prev" id="prevBtn">
+    <button class="slider--btn slider--btn__prev" id="prevBtn" aria-label="Previous slide">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
     </button>
-    <button class="slider--btn slider--btn__next" id="nextBtn">
+    <button class="slider--btn slider--btn__next" id="nextBtn" aria-label="Next slide">
       <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18" /></svg>
     </button>
   </div>
