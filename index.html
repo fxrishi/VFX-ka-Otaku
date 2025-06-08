@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>VFX Ka Otaku | 3D VFX Portfolio</title>
-  <meta name="description" content="Official portfolio site of VFX Ka Otaku – creative animations, VFX, and otaku-themed designs.">
-  <meta name="keywords" content="vfxkaotaku, vfx ka otaku, portfolio, 3d slide, animation, otaku, VFX design, anime portfolio" />
   <style>
-    /* Your existing styles here (no change) */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,29 +12,55 @@
     }
     html, body {
       width: 100vw;
-      height: 100dvh;
+      height: 100vh;
       overflow: hidden;
       font-family: sans-serif;
       background: #000;
-      scroll-behavior: smooth;
     }
-    body.portrait-warning::before {
-      content: "Please rotate your phone to landscape mode.";
+    .loading-screen {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
       background: #000;
-      color: #fff;
       display: flex;
-      justify-content: center;
       align-items: center;
-      font-size: 1.8rem;
+      justify-content: center;
       z-index: 9999;
-      text-align: center;
-      padding: 20px;
+      overflow: hidden;
+    }
+    .loading-screen::before,
+    .loading-screen::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background: #000;
+      z-index: 10;
+      transition: transform 1.2s ease-in-out;
+    }
+    .loading-screen::before {
+      left: 0;
+    }
+    .loading-screen::after {
+      right: 0;
+    }
+    .loading-screen.split::before {
+      transform: translateX(-100%);
+    }
+    .loading-screen.split::after {
+      transform: translateX(100%);
+    }
+    .loading-video {
+      width: 200px;
+      animation: pingpong 2.5s ease-in-out infinite;
+      z-index: 5;
+    }
+    @keyframes pingpong {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
     .background-blur {
       position: absolute;
@@ -54,14 +77,13 @@
     .slider-wrapper {
       position: relative;
       width: 100%;
-      height: 100dvh;
+      height: 100vh;
       padding: 80px 0;
       perspective: 1500px;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1;
-      touch-action: pan-y;
     }
     .slider {
       display: flex;
@@ -70,6 +92,7 @@
       width: 100%;
       height: 100%;
       justify-content: center;
+      outline: none;
     }
     .slide {
       position: absolute;
@@ -84,13 +107,7 @@
       left: 50%;
       transform: translate(-50%, -48%) scale(0.82);
       transition: transform 0.6s ease, opacity 0.4s ease;
-      user-select: none;
       cursor: pointer;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .slide:focus {
-      outline: none;
     }
     .slide img {
       width: 100%;
@@ -98,7 +115,6 @@
       object-fit: cover;
       display: block;
       pointer-events: none;
-      user-select: none;
     }
     .slide.active {
       opacity: 1;
@@ -106,13 +122,13 @@
       z-index: 2;
     }
     .slide.left {
-      transform: translate(calc(-50% - 50vw), -48%) scale(0.8) rotateY(0deg);
+      transform: translate(calc(-50% - 50vw), -48%) scale(0.8);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
     .slide.right {
-      transform: translate(calc(-50% + 50vw), -48%) scale(0.8) rotateY(0deg);
+      transform: translate(calc(-50% + 50vw), -48%) scale(0.8);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
@@ -143,20 +159,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: background 0.3s ease;
-    }
-    #mute-btn:hover {
-      background: rgba(0, 0, 0, 0.7);
     }
     #mute-btn svg {
       width: 24px;
       height: 24px;
       fill: white;
-      pointer-events: none;
-      user-select: none;
-    }
-    #mute-btn.muted svg {
-      fill: #888;
     }
     @media (max-width: 768px) {
       .slide {
@@ -164,77 +171,55 @@
         height: auto;
       }
     }
-
-    /* --- Loading overlay styles --- */
-    #loading-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      pointer-events: all;
-      user-select: none;
-      flex-direction: column;
-    }
-    #loading-video {
-      width: 200px;
-      height: auto;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
-  <!-- Loading overlay -->
-  <div id="loading-overlay">
-    <video id="loading-video" autoplay muted playsinline></video>
+  <!-- Loading screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <video class="loading-video" autoplay muted loop playsinline>
+      <source src="loading.webm" type="video/webm" />
+    </video>
   </div>
 
-  <!-- Your existing content -->
+  <!-- Background Blur -->
   <div class="background-blur" id="bg-blur"></div>
+
+  <!-- Slider -->
   <div class="slider-wrapper">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
-    <div class="slider" id="slider">
-      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
-      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
-      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
-      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
-      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
-      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
-      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
-      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+    <div class="slider" id="slider" tabindex="0">
+      <div class="slide active"><img src="slide1.PNG" alt=""></div>
+      <div class="slide"><img src="slide2.PNG" alt=""></div>
+      <div class="slide"><img src="slide3.PNG" alt=""></div>
+      <div class="slide"><img src="slide4.PNG" alt=""></div>
+      <div class="slide"><img src="slide5.PNG" alt=""></div>
+      <div class="slide"><img src="slide6.PNG" alt=""></div>
+      <div class="slide"><img src="slide7.PNG" alt=""></div>
+      <div class="slide"><img src="slide8.PNG" alt=""></div>
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
 
-    <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 10v4h4l5 5V5L7 10H3z"/>
-      </svg>
+    <button id="mute-btn" title="Toggle music">
+      <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
     </button>
   </div>
 
   <audio id="bg-music" autoplay muted loop>
     <source src="assets/music/upgrade.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
   </audio>
 
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
+    const slider = document.getElementById("slider");
     let current = 0;
-    let isFullscreen = false;
 
     function updateSlider() {
       slides.forEach((slide, index) => {
         slide.classList.remove("active", "left", "right");
-        if (index === current) {
-          slide.classList.add("active");
-        } else if (index === (current - 1 + slides.length) % slides.length) {
-          slide.classList.add("left");
-        } else if (index === (current + 1) % slides.length) {
-          slide.classList.add("right");
-        }
+        if (index === current) slide.classList.add("active");
+        else if (index === (current - 1 + slides.length) % slides.length) slide.classList.add("left");
+        else if (index === (current + 1) % slides.length) slide.classList.add("right");
       });
       bgBlur.style.backgroundImage = `url('${slides[current].querySelector("img").src}')`;
     }
@@ -251,126 +236,33 @@
 
     window.addEventListener("load", () => {
       updateSlider();
+      slider.focus();
 
       const music = document.getElementById("bg-music");
       const muteBtn = document.getElementById("mute-btn");
 
-      // Try to autoplay and unmute after 0.1s
-      music.play().then(() => {
+      // LOADING screen animation and music start
+      setTimeout(() => {
+        document.getElementById("loadingScreen").classList.add("split");
         setTimeout(() => {
+          document.getElementById("loadingScreen").style.display = "none";
           music.muted = false;
-          muteBtn.classList.remove("muted");
-          muteBtn.setAttribute("aria-pressed", "false");
-        }, 100);
-      }).catch(() => {
-        // fallback: unmute after interaction
-        window.addEventListener("click", unmuteOnInteraction, { once: true });
-        window.addEventListener("touchstart", unmuteOnInteraction, { once: true });
-      });
-
-      function unmuteOnInteraction() {
-        music.muted = false;
-        music.play();
-        muteBtn.classList.remove("muted");
-        muteBtn.setAttribute("aria-pressed", "false");
-      }
+          music.play();
+        }, 1200);
+      }, 3000); // Loading visible for 3s
 
       muteBtn.addEventListener("click", () => {
         music.muted = !music.muted;
-        if (music.muted) {
-          muteBtn.classList.add("muted");
-          muteBtn.setAttribute("aria-pressed", "true");
-        } else {
-          muteBtn.classList.remove("muted");
-          muteBtn.setAttribute("aria-pressed", "false");
-        }
-      });
-
-      // Loading video playback logic
-      const loadingOverlay = document.getElementById('loading-overlay');
-      const loadingVideo = document.getElementById('loading-video');
-
-      // Set your webm video source here:
-      loadingVideo.src = 'assets/loading.webm';  // <-- Replace with your actual path
-
-      loadingVideo.loop = false;
-      loadingVideo.playbackRate = 1;
-      loadingVideo.autoplay = true;
-      loadingVideo.muted = true;
-      loadingVideo.playsInline = true;
-
-      let playSequence = [1, 2, 2, 1]; // playback rates for forward and backward
-      let seqIndex = 0;
-
-      loadingVideo.play();
-
-      loadingVideo.addEventListener('ended', () => {
-        seqIndex++;
-        if (seqIndex >= playSequence.length) {
-          // End loading, hide overlay
-          loadingOverlay.style.transition = 'opacity 0.8s ease';
-          loadingOverlay.style.opacity = 0;
-          setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-            document.body.style.overflow = 'auto'; // enable scrolling
-          }, 800);
-          return;
-        }
-
-        // Set playback rate forward or reverse based on sequence
-        loadingVideo.playbackRate = playSequence[seqIndex];
-        if (loadingVideo.playbackRate === 2) {
-          // Speed up forward
-          loadingVideo.playbackRate = 2;
-          loadingVideo.play();
-        } else if (loadingVideo.playbackRate === 1) {
-          // Normal speed forward
-          loadingVideo.playbackRate = 1;
-          loadingVideo.play();
-        } else if (loadingVideo.playbackRate === -1) {
-          // Reverse playback if you want to implement (not supported by HTML video)
-          // We'll fake reverse by playing frames backwards (not trivial), so ignoring here.
-        }
-      });
-
-      // For reversing video playback (HTML5 video cannot play backward natively),
-      // we'll do a trick: play forward twice, then play forward twice again to simulate 1,2,2,1 sequence.
-      // Since negative playbackRate isn't supported, just play forward at different speeds.
-
-      // So we map sequence to playbackRate like: [1, 2, 2, 1]
-
-      loadingVideo.playbackRate = playSequence[0];
-      loadingVideo.play();
-    });
-
-    function handleOrientation() {
-      document.body.classList.toggle("portrait-warning", window.innerHeight > window.innerWidth);
-    }
-
-    window.addEventListener("resize", handleOrientation);
-    handleOrientation();
-
-    slides.forEach((slide, index) => {
-      slide.addEventListener("click", () => {
-        if (index !== current) return;
-        if (!isFullscreen) {
-          slide.style.position = "fixed";
-          slide.style.top = "50%";
-          slide.style.left = "50%";
-          slide.style.transform = "translate(-50%, -50%) scale(1.1)";
-          slide.style.zIndex = "1000";
-          slide.style.transition = "transform 0.4s ease";
-          document.body.style.overflow = "hidden";
-          isFullscreen = true;
-        } else {
-          slide.removeAttribute("style");
-          updateSlider();
-          document.body.style.overflow = "hidden";
-          isFullscreen = false;
-        }
       });
     });
 
+    // Keyboard navigation
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    });
+
+    // Touch swipe
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
@@ -379,6 +271,7 @@
       else if (startX - endX > 50) nextSlide();
     });
 
+    // Mouse wheel
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
