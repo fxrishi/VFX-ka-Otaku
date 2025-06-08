@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>VFX Ka Otaku | 3D VFX Portfolio</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100vw;
       height: 100vh;
@@ -17,83 +13,44 @@
       font-family: sans-serif;
       background: #000;
     }
+
     .loading-screen {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       background: #000;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       z-index: 9999;
       overflow: hidden;
     }
-    .loading-screen::before,
-    .loading-screen::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      background: #000;
-      z-index: 10;
-      transition: transform 1.2s ease-in-out;
-    }
-    .loading-screen::before {
-      left: 0;
-    }
-    .loading-screen::after {
-      right: 0;
-    }
-    .loading-screen.split::before {
-      transform: translateX(-100%);
-    }
-    .loading-screen.split::after {
-      transform: translateX(100%);
-    }
+
     .loading-video {
-      width: 200px;
-      animation: pingpong 2.5s ease-in-out infinite;
-      z-index: 5;
+      width: 300px;
+      height: auto;
     }
-    @keyframes pingpong {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    .background-blur {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      filter: blur(40px) brightness(0.6);
-      z-index: 0;
-      transition: background-image 0.5s ease-in-out;
-    }
+
     .slider-wrapper {
       position: relative;
       width: 100%;
       height: 100vh;
-      padding: 80px 0;
       perspective: 1500px;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1;
     }
+
     .slider {
       display: flex;
       align-items: center;
+      justify-content: center;
       position: relative;
       width: 100%;
       height: 100%;
-      justify-content: center;
-      outline: none;
     }
+
     .slide {
       position: absolute;
       aspect-ratio: 16 / 9;
@@ -107,32 +64,36 @@
       left: 50%;
       transform: translate(-50%, -48%) scale(0.82);
       transition: transform 0.6s ease, opacity 0.4s ease;
-      cursor: pointer;
+      user-select: none;
     }
+
     .slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
-      pointer-events: none;
     }
+
     .slide.active {
       opacity: 1;
       transform: translate(-50%, -48%) scale(0.92);
       z-index: 2;
     }
+
+    .slide.left,
+    .slide.right {
+      opacity: 1;
+      filter: brightness(0.6) blur(2px);
+      z-index: 1;
+    }
+
     .slide.left {
       transform: translate(calc(-50% - 50vw), -48%) scale(0.8);
-      opacity: 1;
-      z-index: 1;
-      filter: brightness(0.6) blur(2px);
     }
+
     .slide.right {
       transform: translate(calc(-50% + 50vw), -48%) scale(0.8);
-      opacity: 1;
-      z-index: 1;
-      filter: brightness(0.6) blur(2px);
     }
+
     .nav {
       position: absolute;
       top: 50%;
@@ -143,8 +104,10 @@
       z-index: 3;
       user-select: none;
     }
+
     .nav.left { left: 20px; }
     .nav.right { right: 20px; }
+
     #mute-btn {
       position: absolute;
       bottom: 20px;
@@ -160,46 +123,58 @@
       justify-content: center;
       align-items: center;
     }
+
     #mute-btn svg {
       width: 24px;
       height: 24px;
       fill: white;
     }
+
+    #mute-btn.muted svg { fill: #888; }
+
     @media (max-width: 768px) {
-      .slide {
-        width: 90vw;
-        height: auto;
-      }
+      .slide { width: 90vw; }
+    }
+
+    .background-blur {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(40px) brightness(0.6);
+      z-index: 0;
+      transition: background-image 0.5s ease-in-out;
     }
   </style>
 </head>
 <body>
-  <!-- Loading screen -->
+
   <div class="loading-screen" id="loadingScreen">
-    <video class="loading-video" autoplay muted loop playsinline>
+    <video id="loadingVideo" class="loading-video" autoplay muted loop playsinline>
       <source src="loading.webm" type="video/webm" />
     </video>
   </div>
 
-  <!-- Background Blur -->
   <div class="background-blur" id="bg-blur"></div>
 
-  <!-- Slider -->
-  <div class="slider-wrapper">
+  <div class="slider-wrapper" id="sliderWrapper" style="display:none;">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
-    <div class="slider" id="slider" tabindex="0">
-      <div class="slide active"><img src="slide1.PNG" alt=""></div>
-      <div class="slide"><img src="slide2.PNG" alt=""></div>
-      <div class="slide"><img src="slide3.PNG" alt=""></div>
-      <div class="slide"><img src="slide4.PNG" alt=""></div>
-      <div class="slide"><img src="slide5.PNG" alt=""></div>
-      <div class="slide"><img src="slide6.PNG" alt=""></div>
-      <div class="slide"><img src="slide7.PNG" alt=""></div>
-      <div class="slide"><img src="slide8.PNG" alt=""></div>
+    <div class="slider" id="slider">
+      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
+      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
+      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
+      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
+      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
+      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
+      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
 
-    <button id="mute-btn" title="Toggle music">
+    <button id="mute-btn" class="muted" aria-label="Toggle music">
       <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
     </button>
   </div>
@@ -211,8 +186,14 @@
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
-    const slider = document.getElementById("slider");
+    const sliderWrapper = document.getElementById("sliderWrapper");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingVideo = document.getElementById("loadingVideo");
+    const music = document.getElementById("bg-music");
+    const muteBtn = document.getElementById("mute-btn");
+
     let current = 0;
+    let isFullscreen = false;
 
     function updateSlider() {
       slides.forEach((slide, index) => {
@@ -234,32 +215,10 @@
       updateSlider();
     }
 
-    window.addEventListener("load", () => {
-      updateSlider();
-      slider.focus();
-
-      const music = document.getElementById("bg-music");
-      const muteBtn = document.getElementById("mute-btn");
-
-      // LOADING screen animation and music start
-      setTimeout(() => {
-        document.getElementById("loadingScreen").classList.add("split");
-        setTimeout(() => {
-          document.getElementById("loadingScreen").style.display = "none";
-          music.muted = false;
-          music.play();
-        }, 1200);
-      }, 3000); // Loading visible for 3s
-
-      muteBtn.addEventListener("click", () => {
-        music.muted = !music.muted;
-      });
-    });
-
-    // Keyboard navigation
-    document.addEventListener("keydown", e => {
+    // Keyboard arrows
+    document.addEventListener("keydown", (e) => {
       if (e.key === "ArrowRight") nextSlide();
-      if (e.key === "ArrowLeft") prevSlide();
+      else if (e.key === "ArrowLeft") prevSlide();
     });
 
     // Touch swipe
@@ -271,7 +230,7 @@
       else if (startX - endX > 50) nextSlide();
     });
 
-    // Mouse wheel
+    // Scroll
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
@@ -279,6 +238,30 @@
       else if (e.deltaY < 0) prevSlide();
       wheelLock = true;
       setTimeout(() => wheelLock = false, 600);
+    });
+
+    muteBtn.addEventListener("click", () => {
+      music.muted = !music.muted;
+      muteBtn.classList.toggle("muted", music.muted);
+    });
+
+    window.addEventListener("load", () => {
+      updateSlider();
+
+      // Wait for 4.5s then remove loading and show slider
+      setTimeout(() => {
+        loadingScreen.style.transition = "opacity 1s ease";
+        loadingScreen.style.opacity = 0;
+        setTimeout(() => {
+          loadingScreen.remove();
+          sliderWrapper.style.display = "flex";
+          setTimeout(() => {
+            music.muted = false;
+            music.play();
+            muteBtn.classList.remove("muted");
+          }, 300);
+        }, 1000);
+      }, 4500);
     });
   </script>
 </body>
