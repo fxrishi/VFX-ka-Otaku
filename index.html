@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>VFX Otaku 3D Slider</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1" />
+  <title>3D Slide Portfolio</title>
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     html, body {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: black;
       font-family: sans-serif;
+      background: #000;
     }
 
-    #rotate-warning {
-      display: none;
+    body.portrait-warning::before {
+      content: "Please rotate your phone to landscape mode.";
       position: fixed;
       top: 0;
       left: 0;
@@ -28,105 +28,91 @@
       height: 100vh;
       background: #000;
       color: #fff;
+      display: flex;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      font-size: 24px;
-      z-index: 1000;
-      padding: 20px;
+      font-size: 1.5rem;
+      z-index: 9999;
     }
 
     .background-blur {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       background-size: cover;
       background-position: center;
-      filter: blur(30px) brightness(0.4);
-      z-index: -1;
-      transition: background-image 0.5s ease;
+      filter: blur(40px) brightness(0.6);
+      z-index: 0;
+      transition: background-image 0.5s ease-in-out;
     }
 
     .slider-wrapper {
-      perspective: 1000px;
-      width: 100vw;
-      height: 100vh;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      perspective: 1500px;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      z-index: 1;
     }
 
     .slider {
       display: flex;
-      transition: transform 0.8s ease;
       transform-style: preserve-3d;
+      transition: transform 0.8s ease-in-out;
     }
 
     .slide {
-      flex: 0 0 100vw;
-      transform: scale(0.95);
-      transform-origin: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      min-width: 70vw;
+      height: 70vh;
+      margin: 0 30px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform: scale(0.85);
       transition: transform 0.5s ease;
+      backface-visibility: hidden;
     }
 
     .slide img {
-      width: 90vw;
-      height: 90vh;
-      object-fit: contain;
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slide.active {
+      transform: scale(1);
+      z-index: 2;
     }
 
     .nav {
       position: absolute;
       top: 50%;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
       transform: translateY(-50%);
-      padding: 0 20px;
-      z-index: 10;
-    }
-
-    .nav button {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      font-size: 2em;
+      font-size: 3rem;
+      color: #fff;
       cursor: pointer;
+      z-index: 3;
+      user-select: none;
+      background: rgba(0,0,0,0.4);
       padding: 10px;
       border-radius: 50%;
-      backdrop-filter: blur(5px);
     }
 
-    @media (orientation: portrait) {
-      .slider-wrapper, .nav {
-        display: none;
-      }
-      #rotate-warning {
-        display: flex;
-      }
-    }
+    .nav.left { left: 20px; }
+    .nav.right { right: 20px; }
   </style>
 </head>
 <body>
-  <div id="rotate-warning">Please rotate your device to landscape mode</div>
-
   <div class="background-blur" id="bg-blur"></div>
-
-  <div class="nav">
-    <button onclick="prevSlide()">&#10094;</button>
-    <button onclick="nextSlide()">&#10095;</button>
-  </div>
-
   <div class="slider-wrapper">
+    <div class="nav left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
-      <div class="slide"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
       <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
       <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
       <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
@@ -135,30 +121,49 @@
       <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
       <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
+    <div class="nav right" onclick="nextSlide()">&#10095;</div>
   </div>
 
   <script>
-    let currentSlide = 0;
-    const totalSlides = 8;
     const slider = document.getElementById("slider");
-    const bg = document.getElementById("bg-blur");
+    const slides = document.querySelectorAll(".slide");
+    const bgBlur = document.getElementById("bg-blur");
+    let current = 0;
 
-    function updateSlide() {
-      slider.style.transform = `translateX(-${currentSlide * 100}vw) rotateY(${currentSlide * 5}deg)`;
-      bg.style.backgroundImage = `url(slide${currentSlide + 1}.PNG)`;
+    function updateSlider() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove("active");
+        slide.style.transform = `translateX(${(index - current) * 80}vw) rotateY(${(index - current) * 30}deg) scale(0.85)`;
+      });
+      slides[current].classList.add("active");
+      slides[current].style.transform = "translateX(0) rotateY(0deg) scale(1)";
+      bgBlur.style.backgroundImage = `url('${slides[current].querySelector("img").src}')`;
     }
 
     function nextSlide() {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      updateSlide();
+      current = (current + 1) % slides.length;
+      updateSlider();
     }
 
     function prevSlide() {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      updateSlide();
+      current = (current - 1 + slides.length) % slides.length;
+      updateSlider();
     }
 
-    updateSlide();
+    // Initialize on load
+    updateSlider();
+
+    // Portrait mode warning
+    function handleOrientation() {
+      if (window.innerHeight > window.innerWidth) {
+        document.body.classList.add("portrait-warning");
+      } else {
+        document.body.classList.remove("portrait-warning");
+      }
+    }
+
+    window.addEventListener("resize", handleOrientation);
+    handleOrientation();
   </script>
 </body>
 </html>
