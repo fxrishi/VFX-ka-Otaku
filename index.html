@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>3D Slide Portfolio</title>
   <style>
     * {
@@ -64,18 +64,21 @@
     .slider {
       display: flex;
       align-items: center;
-      transition: transform 0.6s ease-in-out;
+      position: relative;
     }
 
     .slide {
       position: absolute;
       width: 70vw;
       height: 70vh;
-      transition: transform 0.6s ease, opacity 0.4s ease;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
       opacity: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.85);
+      transition: transform 0.6s ease, opacity 0.4s ease;
     }
 
     .slide img {
@@ -87,18 +90,18 @@
 
     .slide.active {
       opacity: 1;
-      transform: translateX(0) scale(1) rotateY(0deg);
+      transform: translate(-50%, -50%) scale(1) rotateY(0deg);
       z-index: 2;
     }
 
     .slide.left {
-      transform: translateX(-60vw) scale(0.85) rotateY(30deg);
+      transform: translate(calc(-50% - 60vw), -50%) scale(0.85) rotateY(30deg);
       z-index: 1;
       opacity: 1;
     }
 
     .slide.right {
-      transform: translateX(60vw) scale(0.85) rotateY(-30deg);
+      transform: translate(calc(-50% + 60vw), -50%) scale(0.85) rotateY(-30deg);
       z-index: 1;
       opacity: 1;
     }
@@ -107,14 +110,11 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 3rem;
-      color: #fff;
+      font-size: 3.5rem;
+      color: white;
       cursor: pointer;
       z-index: 3;
       user-select: none;
-      background: rgba(0,0,0,0.3);
-      padding: 10px;
-      border-radius: 50%;
     }
 
     .nav.left { left: 20px; }
@@ -130,11 +130,10 @@
 </head>
 <body>
   <div class="background-blur" id="bg-blur"></div>
-
   <div class="slider-wrapper">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
-      <div class="slide"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
       <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
       <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
       <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
@@ -147,7 +146,6 @@
   </div>
 
   <script>
-    const slider = document.getElementById("slider");
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
     let current = 0;
@@ -155,7 +153,6 @@
     function updateSlider() {
       slides.forEach((slide, index) => {
         slide.classList.remove("active", "left", "right");
-
         if (index === current) {
           slide.classList.add("active");
         } else if (index === (current - 1 + slides.length) % slides.length) {
@@ -165,8 +162,7 @@
         }
       });
 
-      const currentImg = slides[current].querySelector("img").src;
-      bgBlur.style.backgroundImage = `url('${currentImg}')`;
+      bgBlur.style.backgroundImage = `url('${slides[current].querySelector("img").src}')`;
     }
 
     function nextSlide() {
@@ -179,6 +175,9 @@
       updateSlider();
     }
 
+    updateSlider();
+
+    // Portrait mode handling
     function handleOrientation() {
       if (window.innerHeight > window.innerWidth) {
         document.body.classList.add("portrait-warning");
@@ -189,7 +188,6 @@
 
     window.addEventListener("resize", handleOrientation);
     handleOrientation();
-    updateSlider();
   </script>
 </body>
 </html>
