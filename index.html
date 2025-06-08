@@ -259,6 +259,16 @@
           muteBtn.setAttribute("aria-pressed", "false");
         }
       });
+
+      // *** Added keyboard navigation ***
+      window.addEventListener("keydown", (e) => {
+        if (isFullscreen) return; // disable arrows in fullscreen mode if you want
+        if (e.key === "ArrowRight") {
+          nextSlide();
+        } else if (e.key === "ArrowLeft") {
+          prevSlide();
+        }
+      });
     });
 
     function handleOrientation() {
