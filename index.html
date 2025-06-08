@@ -54,7 +54,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      padding: 80px 0; /* Balanced top and bottom spacing */
+      padding: 80px 0;
       perspective: 1500px;
       display: flex;
       justify-content: center;
@@ -69,12 +69,13 @@
       width: 100%;
       height: 100%;
       justify-content: center;
+      transition: transform 0.6s ease;
     }
 
     .slide {
       position: absolute;
       aspect-ratio: 16 / 9;
-      width: 65vw; /* Slightly smaller central slide */
+      width: 65vw;
       max-width: 900px;
       border-radius: 20px;
       overflow: hidden;
@@ -82,8 +83,9 @@
       opacity: 0;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -52%) scale(0.85); /* Adjusted vertical alignment up */
+      transform: translate(-50%, -52%) scale(0.8);
       transition: transform 0.6s ease, opacity 0.4s ease;
+      cursor: pointer;
     }
 
     .slide img {
@@ -95,22 +97,35 @@
 
     .slide.active {
       opacity: 1;
-      transform: translate(-50%, -52%) scale(0.95); /* Adjusted vertical alignment up */
+      transform: translate(-50%, -52%) scale(0.9);
       z-index: 2;
     }
 
     .slide.left {
-      transform: translate(calc(-50% - 50vw), -52%) scale(0.85) rotateY(40deg);
+      transform: translate(calc(-50% - 50vw), -52%) scale(0.8) rotateY(40deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
 
     .slide.right {
-      transform: translate(calc(-50% + 50vw), -52%) scale(0.85) rotateY(-40deg);
+      transform: translate(calc(-50% + 50vw), -52%) scale(0.8) rotateY(-40deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
+    }
+
+    .slide.fullscreen {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      transform: none !important;
+      scale: 1 !important;
+      border-radius: 0 !important;
+      z-index: 9998 !important;
+      transition: all 0.5s ease;
     }
 
     .nav {
@@ -122,10 +137,16 @@
       cursor: pointer;
       z-index: 3;
       user-select: none;
+      transition: opacity 0.3s ease;
     }
 
     .nav.left { left: 20px; }
     .nav.right { right: 20px; }
+
+    .nav.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
 
     @media (max-width: 768px) {
       .slide {
@@ -138,7 +159,7 @@
 <body>
   <div class="background-blur" id="bg-blur"></div>
   <div class="slider-wrapper">
-    <div class="nav left" onclick="prevSlide()">&#10094;</div>
+    <div class="nav left" id="nav-left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
       <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
       <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
@@ -149,13 +170,16 @@
       <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
       <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
-    <div class="nav right" onclick="nextSlide()">&#10095;</div>
+    <div class="nav right" id="nav-right" onclick="nextSlide()">&#10095;</div>
   </div>
 
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
+    const navLeft = document.getElementById("nav-left");
+    const navRight = document.getElementById("nav-right");
     let current = 0;
+    let isFullscreen = false;
 
     function updateSlider() {
       slides.forEach((slide, index) => {
@@ -173,14 +197,28 @@
     }
 
     function nextSlide() {
+      if (isFullscreen) return;
       current = (current + 1) % slides.length;
       updateSlider();
     }
 
     function prevSlide() {
+      if (isFullscreen) return;
       current = (current - 1 + slides.length) % slides.length;
       updateSlider();
     }
+
+    slides.forEach((slide, index) => {
+      slide.addEventListener("click", () => {
+        if (index !== current) return;
+
+        isFullscreen = !isFullscreen;
+        slide.classList.toggle("fullscreen");
+        navLeft.classList.toggle("hidden", isFullscreen);
+        navRight.classList.toggle("hidden", isFullscreen);
+        bgBlur.style.display = isFullscreen ? "none" : "block";
+      });
+    });
 
     updateSlider();
 
