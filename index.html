@@ -25,8 +25,9 @@
     body.portrait-warning::before {
       content: "Please rotate your phone to landscape mode.";
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 100vw;
       height: 100vh;
       background: #000;
@@ -34,10 +35,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: clamp(1rem, 4vw, 2rem);
-      text-align: center;
-      padding: 40px;
+      font-size: 1.8rem;
       z-index: 9999;
+      text-align: center;
+      padding: 20px;
     }
 
     .background-blur {
@@ -63,6 +64,7 @@
       justify-content: center;
       align-items: center;
       z-index: 1;
+      touch-action: pan-y;
     }
 
     .slider {
@@ -85,14 +87,10 @@
       opacity: 0;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -45%) scale(0.82);
+      transform: translate(-50%, -48%) scale(0.82);
       transition: transform 0.6s ease, opacity 0.4s ease;
-      outline: none;
       user-select: none;
       cursor: pointer;
-    }
-
-    .slide:focus {
       outline: none;
     }
 
@@ -106,19 +104,19 @@
 
     .slide.active {
       opacity: 1;
-      transform: translate(-50%, -45%) scale(0.92);
+      transform: translate(-50%, -48%) scale(0.92);
       z-index: 2;
     }
 
     .slide.left {
-      transform: translate(calc(-50% - 50vw), -45%) scale(0.8) rotateY(40deg);
+      transform: translate(calc(-50% - 50vw), -48%) scale(0.8) rotateY(40deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
 
     .slide.right {
-      transform: translate(calc(-50% + 50vw), -45%) scale(0.8) rotateY(-40deg);
+      transform: translate(calc(-50% + 50vw), -48%) scale(0.8) rotateY(-40deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
@@ -133,10 +131,24 @@
       cursor: pointer;
       z-index: 3;
       user-select: none;
+      outline: none;
     }
 
     .nav.left { left: 20px; }
     .nav.right { right: 20px; }
+
+    #mute-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
 
     @media (max-width: 768px) {
       .slide {
@@ -161,12 +173,19 @@
       <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
+    <button id="mute-btn">🔊 Music On</button>
   </div>
 
   <!-- Hidden SEO Text -->
   <div style="position:absolute; left:-9999px; top:-9999px;">
     VFX Ka Otaku – creative VFX portfolio, anime art, 3D design, animation showcase, otaku-inspired visuals. vfxkaotaku
   </div>
+
+  <!-- Background Music -->
+  <audio id="bg-music" autoplay loop>
+    <source src="assets/music/upgrade.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
     const slides = document.querySelectorAll(".slide");
@@ -198,24 +217,22 @@
       updateSlider();
     }
 
-    // Slight auto scroll boost on load
+    // Initial scroll to center + load first slide
     window.addEventListener("load", () => {
-      setTimeout(() => {
-        window.scrollTo({ top: 100, behavior: "smooth" });
-      }, 200);
+      window.scrollTo({ top: 100, behavior: 'smooth' });
       updateSlider();
     });
 
-    // Orientation check
+    // Orientation warning
     function handleOrientation() {
       document.body.classList.toggle("portrait-warning", window.innerHeight > window.innerWidth);
     }
+
     window.addEventListener("resize", handleOrientation);
     handleOrientation();
 
-    // Click for fullscreen view
+    // Fullscreen on image click
     slides.forEach((slide, index) => {
-      slide.setAttribute("tabindex", "-1");
       slide.addEventListener("click", () => {
         if (index !== current) return;
         if (!isFullscreen) {
@@ -236,24 +253,31 @@
       });
     });
 
-    // Touch swipe
-    let touchStartX = 0;
-    let touchEndX = 0;
-    document.addEventListener("touchstart", e => touchStartX = e.changedTouches[0].screenX);
+    // Swipe support
+    let startX = 0;
+    document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX < touchStartX - 50) nextSlide();
-      else if (touchEndX > touchStartX + 50) prevSlide();
+      const endX = e.changedTouches[0].clientX;
+      if (endX - startX > 50) prevSlide();
+      else if (startX - endX > 50) nextSlide();
     });
 
-    // Mouse wheel navigation
-    let wheelCooldown = false;
-    document.addEventListener("wheel", (e) => {
-      if (wheelCooldown) return;
-      wheelCooldown = true;
+    // Mouse wheel scroll
+    let wheelLock = false;
+    window.addEventListener("wheel", (e) => {
+      if (wheelLock) return;
       if (e.deltaY > 0) nextSlide();
       else if (e.deltaY < 0) prevSlide();
-      setTimeout(() => (wheelCooldown = false), 600);
+      wheelLock = true;
+      setTimeout(() => wheelLock = false, 600);
+    });
+
+    // Mute / Unmute
+    const music = document.getElementById("bg-music");
+    const muteBtn = document.getElementById("mute-btn");
+    muteBtn.addEventListener("click", () => {
+      music.muted = !music.muted;
+      muteBtn.textContent = music.muted ? "🔇 Music Off" : "🔊 Music On";
     });
   </script>
 </body>
