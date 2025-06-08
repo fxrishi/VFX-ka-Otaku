@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>3D Voyage Slider with Bias Lighting</title>
+  <title>Responsive 3D Voyage Slider</title>
   <style>
     * {
       margin: 0; padding: 0; box-sizing: border-box;
@@ -25,7 +25,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('slide1.PNG');
+      background-image: url('slide1.webp');
       background-size: cover;
       background-position: center;
       filter: blur(25px) brightness(0.3);
@@ -35,8 +35,9 @@
 
     .slider {
       position: relative;
-      width: 960px;
-      height: 540px;
+      width: 90vw;
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
       perspective: 1200px;
       z-index: 2;
       border-radius: 12px;
@@ -50,7 +51,6 @@
       transform-style: preserve-3d;
       transition: transform 0.8s ease-in-out;
       border-radius: 12px;
-      overflow: visible;
     }
 
     .slide {
@@ -65,16 +65,19 @@
       border-radius: 12px;
       overflow: hidden;
     }
+
     .slide[data-current] {
       transform: translateX(-50%) translateZ(0) scale(1);
       opacity: 1;
       z-index: 3;
     }
+
     .slide[data-next] {
       transform: translateX(100%) translateZ(-200px) scale(0.8);
       opacity: 0.5;
       z-index: 2;
     }
+
     .slide[data-previous] {
       transform: translateX(-200%) translateZ(-200px) scale(0.8);
       opacity: 0.5;
@@ -102,7 +105,15 @@
       border-radius: 50%;
       cursor: pointer;
       z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
     }
+    .slider--btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
     .slider--btn svg {
       stroke: white;
       stroke-width: 2;
@@ -110,8 +121,9 @@
       width: 24px;
       height: 24px;
     }
-    .slider--btn__prev { left: -60px; }
-    .slider--btn__next { right: -60px; }
+
+    .slider--btn__prev { left: -50px; }
+    .slider--btn__next { right: -50px; }
 
     .bias-light {
       position: absolute;
@@ -126,49 +138,46 @@
     }
 
     .bias-top-left {
-      top: -30px;
-      left: -30px;
-      width: 150px;
-      height: 150px;
+      top: -30px; left: -30px;
+      width: 120px; height: 120px;
       animation-delay: 0s;
     }
+
     .bias-top-right {
-      top: -30px;
-      right: -30px;
-      width: 130px;
-      height: 130px;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
       animation-delay: 1.2s;
     }
+
     .bias-bottom-left {
-      bottom: -30px;
-      left: -30px;
-      width: 130px;
-      height: 130px;
+      bottom: -30px; left: -30px;
+      width: 120px; height: 120px;
       animation-delay: 2.4s;
     }
+
     .bias-bottom-right {
-      bottom: -30px;
-      right: -30px;
-      width: 150px;
-      height: 150px;
+      bottom: -30px; right: -30px;
+      width: 120px; height: 120px;
       animation-delay: 3.6s;
     }
 
     @keyframes pulseLight {
-      0%, 100% {
-        opacity: 0.6;
-        transform: scale(1);
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.1); }
+    }
+
+    @media (max-width: 600px) {
+      .slider--btn {
+        width: 32px;
+        height: 32px;
       }
-      50% {
-        opacity: 0.9;
-        transform: scale(1.1);
-      }
+      .slider--btn__prev { left: -40px; }
+      .slider--btn__next { right: -40px; }
     }
   </style>
 </head>
 <body>
   <div class="background-blur"></div>
-
   <div class="slider">
     <button class="slider--btn slider--btn__prev" aria-label="Previous Slide">
       <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
@@ -176,34 +185,34 @@
     <button class="slider--btn slider--btn__next" aria-label="Next Slide">
       <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" /></svg>
     </button>
-
     <div class="slides">
       <div class="slide" data-index="0" data-current>
-        <div class="slide__bg" style="background-image: url('slide1.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide1.webp');"></div>
       </div>
       <div class="slide" data-index="1" data-next>
-        <div class="slide__bg" style="background-image: url('slide2.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide2.webp');"></div>
       </div>
       <div class="slide" data-index="2">
-        <div class="slide__bg" style="background-image: url('slide3.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide3.webp');"></div>
       </div>
       <div class="slide" data-index="3">
-        <div class="slide__bg" style="background-image: url('slide4.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide4.webp');"></div>
       </div>
       <div class="slide" data-index="4">
-        <div class="slide__bg" style="background-image: url('slide5.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide5.webp');"></div>
       </div>
       <div class="slide" data-index="5">
-        <div class="slide__bg" style="background-image: url('slide6.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide6.webp');"></div>
       </div>
       <div class="slide" data-index="6">
-        <div class="slide__bg" style="background-image: url('slide7.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide7.webp');"></div>
       </div>
       <div class="slide" data-index="7">
-        <div class="slide__bg" style="background-image: url('slide8.PNG');"></div>
+        <div class="slide__bg" style="background-image: url('slide8.webp');"></div>
       </div>
     </div>
 
+    <!-- Bias Lighting -->
     <div class="bias-light bias-top-left"></div>
     <div class="bias-light bias-top-right"></div>
     <div class="bias-light bias-bottom-left"></div>
@@ -220,7 +229,7 @@
 
     const slideColors = [
       '#FF6F61', '#4A90E2', '#F5A623', '#50E3C2',
-      '#B8E986', '#D0021B', '#9013FE', '#F8E71C',
+      '#B8E986', '#D0021B', '#9013FE', '#F8E71C'
     ];
 
     function updateSlides(newIndex) {
