@@ -104,14 +104,15 @@
       transform: translate(-50%, -48%) scale(0.92);
       z-index: 2;
     }
+    /* Tilt side slides more toward the screen for 3D HUD look */
     .slide.left {
-      transform: translate(calc(-50% - 50vw), -48%) scale(0.8) rotateY(40deg);
+      transform: translate(calc(-50% - 50vw), -48%) scale(0.8) rotateY(60deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
     .slide.right {
-      transform: translate(calc(-50% + 50vw), -48%) scale(0.8) rotateY(-40deg);
+      transform: translate(calc(-50% + 50vw), -48%) scale(0.8) rotateY(-60deg);
       opacity: 1;
       z-index: 1;
       filter: brightness(0.6) blur(2px);
@@ -259,16 +260,6 @@
           muteBtn.setAttribute("aria-pressed", "false");
         }
       });
-
-      // *** Added keyboard navigation ***
-      window.addEventListener("keydown", (e) => {
-        if (isFullscreen) return; // disable arrows in fullscreen mode if you want
-        if (e.key === "ArrowRight") {
-          nextSlide();
-        } else if (e.key === "ArrowLeft") {
-          prevSlide();
-        }
-      });
     });
 
     function handleOrientation() {
@@ -314,6 +305,15 @@
       else if (e.deltaY < 0) prevSlide();
       wheelLock = true;
       setTimeout(() => wheelLock = false, 600);
+    });
+
+    // KEYBOARD NAVIGATION - ADDED OUTSIDE window.load for instant response
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        nextSlide();
+      } else if (e.key === "ArrowLeft") {
+        prevSlide();
+      }
     });
   </script>
 </body>
