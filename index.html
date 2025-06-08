@@ -92,6 +92,11 @@
       user-select: none;
       cursor: pointer;
       outline: none;
+      -webkit-tap-highlight-color: transparent; /* remove blue highlight on tap */
+    }
+
+    .slide:focus {
+      outline: none; /* remove focus outline */
     }
 
     .slide img {
@@ -100,6 +105,7 @@
       object-fit: cover;
       display: block;
       pointer-events: none;
+      user-select: none;
     }
 
     .slide.active {
@@ -142,13 +148,33 @@
       bottom: 20px;
       right: 20px;
       z-index: 10;
-      background: rgba(0,0,0,0.6);
-      color: white;
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.4);
       border: none;
-      padding: 10px 15px;
       border-radius: 8px;
-      font-size: 1rem;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+
+    #mute-btn:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    #mute-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Dim icon when muted */
+    #mute-btn.muted svg {
+      fill: #888;
     }
 
     @media (max-width: 768px) {
@@ -157,15 +183,6 @@
         height: auto;
       }
     }
-
-    /* Fix blue outline on mouse click but keep for keyboard focus */
-    .user-is-tabbing .slide:focus {
-      outline: 2px solid #4D90FE;
-    }
-
-    .slide:focus {
-      outline: none;
-    }
   </style>
 </head>
 <body>
@@ -173,17 +190,23 @@
   <div class="slider-wrapper">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
-      <div class="slide active" tabindex="0"><img src="slide1.PNG" alt="slide1"></div>
-      <div class="slide" tabindex="0"><img src="slide2.PNG" alt="slide2"></div>
-      <div class="slide" tabindex="0"><img src="slide3.PNG" alt="slide3"></div>
-      <div class="slide" tabindex="0"><img src="slide4.PNG" alt="slide4"></div>
-      <div class="slide" tabindex="0"><img src="slide5.PNG" alt="slide5"></div>
-      <div class="slide" tabindex="0"><img src="slide6.PNG" alt="slide6"></div>
-      <div class="slide" tabindex="0"><img src="slide7.PNG" alt="slide7"></div>
-      <div class="slide" tabindex="0"><img src="slide8.PNG" alt="slide8"></div>
+      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
+      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
+      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
+      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
+      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
+      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
+      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
-    <button id="mute-btn" aria-pressed="false">🔊 Music On</button>
+
+    <!-- Music Button -->
+    <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M3 10v4h4l5 5V5L7 10H3z"/>
+      </svg>
+    </button>
   </div>
 
   <!-- Hidden SEO Text -->
@@ -192,13 +215,12 @@
   </div>
 
   <!-- Background Music -->
-  <audio id="bg-music" autoplay loop>
+  <audio id="bg-music" loop muted>
     <source src="assets/music/upgrade.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    // Slider variables
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
     let current = 0;
@@ -264,7 +286,7 @@
       });
     });
 
-    // Swipe support for mobile
+    // Swipe support
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
@@ -273,7 +295,7 @@
       else if (startX - endX > 50) nextSlide();
     });
 
-    // Mouse wheel scroll with lock to avoid rapid firing
+    // Mouse wheel scroll
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
@@ -283,32 +305,37 @@
       setTimeout(() => wheelLock = false, 600);
     });
 
-    // Mute / Unmute button toggle
+    // Music and Mute Button
     const music = document.getElementById("bg-music");
     const muteBtn = document.getElementById("mute-btn");
 
-    muteBtn.addEventListener("click", () => {
-      music.muted = !music.muted;
-      muteBtn.textContent = music.muted ? "🔇 Music Off" : "🔊 Music On";
-      muteBtn.setAttribute("aria-pressed", music.muted);
+    // Start muted for autoplay to work
+    music.muted = true;
+    music.play().catch(() => {
+      // Autoplay might fail; wait for interaction
     });
 
-    // Accessibility: Show outline on keyboard navigation only
-    function handleFirstTab(e) {
-      if (e.key === 'Tab') {
-        document.body.classList.add('user-is-tabbing');
-        window.removeEventListener('keydown', handleFirstTab);
-        window.addEventListener('mousedown', handleMouseDownOnce);
+    function unmuteOnInteraction() {
+      music.muted = false;
+      music.play();
+      muteBtn.classList.remove("muted");
+      muteBtn.setAttribute("aria-pressed", "false");
+      window.removeEventListener("click", unmuteOnInteraction);
+      window.removeEventListener("touchstart", unmuteOnInteraction);
+    }
+    window.addEventListener("click", unmuteOnInteraction);
+    window.addEventListener("touchstart", unmuteOnInteraction);
+
+    muteBtn.addEventListener("click", () => {
+      music.muted = !music.muted;
+      if (music.muted) {
+        muteBtn.classList.add("muted");
+        muteBtn.setAttribute("aria-pressed", "true");
+      } else {
+        muteBtn.classList.remove("muted");
+        muteBtn.setAttribute("aria-pressed", "false");
       }
-    }
-
-    function handleMouseDownOnce() {
-      document.body.classList.remove('user-is-tabbing');
-      window.removeEventListener('mousedown', handleMouseDownOnce);
-      window.addEventListener('keydown', handleFirstTab);
-    }
-
-    window.addEventListener('keydown', handleFirstTab);
+    });
   </script>
 </body>
 </html>
