@@ -3,120 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>3D Image Slider</title>
+  <title>VFX Otaku Slider</title>
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: #111;
-      width: 100%;
-      height: 100%;
+      box-sizing: border-box;
     }
 
-    @media screen and (orientation: portrait) {
-      body::before {
-        content: "Please rotate your device to landscape mode.";
-        color: white;
-        font-size: 2em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-      }
-      #slider {
-        display: none;
-      }
-    }
-
-    .slider-container {
-      position: relative;
+    html, body {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      display: flex;
+      background: black;
+      font-family: sans-serif;
+    }
+
+    #rotate-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      color: #fff;
       justify-content: center;
       align-items: center;
-      perspective: 2000px;
+      text-align: center;
+      font-size: 24px;
+      z-index: 1000;
+      padding: 20px;
     }
 
     .slider {
       display: flex;
-      transform-style: preserve-3d;
-      transition: transform 1s;
+      width: 800%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
     }
 
-    .slider img {
-      max-width: 100vw;
-      max-height: 100vh;
+    .slide {
+      flex: 0 0 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide img {
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      transform: scale(1);
-      margin: 0 10px;
-      border-radius: 20px;
     }
 
     .nav {
       position: absolute;
       top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
       transform: translateY(-50%);
-      font-size: 3rem;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    .nav button {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
       color: white;
-      background: rgba(0,0,0,0.5);
-      padding: 10px 20px;
+      font-size: 2em;
       cursor: pointer;
-      user-select: none;
-      z-index: 100;
+      padding: 10px;
     }
 
-    .nav.left {
-      left: 10px;
-    }
-
-    .nav.right {
-      right: 10px;
-    }
-
-    .bias-light {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 0;
+    @media (orientation: portrait) {
+      .slider, .nav {
+        display: none;
+      }
+      #rotate-warning {
+        display: flex;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="rotate-warning">Please rotate your device to landscape mode</div>
 
-<div class="slider-container">
-  <div class="nav left" onclick="move(-1)">&#10094;</div>
-  <div id="slider" class="slider">
-    <img src="slide1.PNG" alt="Slide 1" />
-    <img src="slide2.PNG" alt="Slide 2" />
-    <img src="slide3.PNG" alt="Slide 3" />
-    <img src="slide4.PNG" alt="Slide 4" />
+  <div class="nav">
+    <button onclick="prevSlide()">&#10094;</button>
+    <button onclick="nextSlide()">&#10095;</button>
   </div>
-  <div class="nav right" onclick="move(1)">&#10095;</div>
-  <div class="bias-light"></div>
-</div>
 
-<script>
-  const slider = document.getElementById("slider");
-  let index = 0;
+  <div class="slider" id="slider">
+    <div class="slide"><img src="slide1.PNG" alt="slide1"></div>
+    <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
+    <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
+    <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
+    <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
+    <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
+    <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
+    <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+  </div>
 
-  function move(dir) {
-    const images = slider.children.length;
-    index = (index + dir + images) % images;
-    slider.style.transform = `translateX(${-index * 100}vw)`;
-  }
-</script>
+  <script>
+    let currentSlide = 0;
+    const totalSlides = 8;
+    const slider = document.getElementById("slider");
 
+    function updateSlide() {
+      slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateSlide();
+    }
+  </script>
 </body>
 </html>
