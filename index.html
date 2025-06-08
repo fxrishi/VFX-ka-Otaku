@@ -2,170 +2,120 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>3D Voyage Slider (Landscape Only)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>3D Image Slider</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       overflow: hidden;
       background: #111;
-      font-family: 'Segoe UI', sans-serif;
-      height: 100%;
       width: 100%;
-      touch-action: none;
-    }
-
-    .landscape-warning {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 9999;
-      background: #000;
-      color: #fff;
-      width: 100vw;
-      height: 100vh;
-      font-size: 1.5rem;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      height: 100%;
     }
 
     @media screen and (orientation: portrait) {
-      .slider {
-        display: none !important;
-      }
-
-      .landscape-warning {
+      body::before {
+        content: "Please rotate your device to landscape mode.";
+        color: white;
+        font-size: 2em;
         display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
       }
+      #slider {
+        display: none;
+      }
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 2000px;
     }
 
     .slider {
-      width: 100%;
-      max-width: 960px;
-      aspect-ratio: 16 / 9;
-      perspective: 1200px;
-      position: relative;
-      margin: auto;
-    }
-
-    .slider--container {
-      width: 100%;
-      height: 100%;
       display: flex;
       transform-style: preserve-3d;
-      transition: transform 0.6s ease;
+      transition: transform 1s;
     }
 
-    .slider--slide {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      backface-visibility: hidden;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    .slider img {
+      max-width: 100vw;
+      max-height: 100vh;
+      object-fit: contain;
+      transform: scale(1);
+      margin: 0 10px;
+      border-radius: 20px;
     }
 
-    .slider--slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .slider--btn {
+    .nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: #222;
-      border: none;
-      color: #fff;
-      font-size: 24px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      font-size: 3rem;
+      color: white;
+      background: rgba(0,0,0,0.5);
+      padding: 10px 20px;
       cursor: pointer;
-      z-index: 10;
-      transition: background 0.3s ease;
+      user-select: none;
+      z-index: 100;
     }
 
-    .slider--btn:hover {
-      background: #444;
+    .nav.left {
+      left: 10px;
     }
 
-    .slider--btn__prev { left: -50px; }
-    .slider--btn__next { right: -50px; }
-
-    @media (max-width: 600px) {
-      .slider--btn {
-        width: 28px;
-        height: 28px;
-        font-size: 18px;
-      }
-
-      .slider--btn__prev { left: -30px; }
-      .slider--btn__next { right: -30px; }
+    .nav.right {
+      right: 10px;
     }
 
     .bias-light {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 120px;
-      height: 120px;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 80%);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
       border-radius: 50%;
+      transform: translate(-50%, -50%);
       pointer-events: none;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
 
-<div class="landscape-warning">
-  Please rotate your device to landscape mode to view this slider.
-</div>
-
-<div class="slider">
-  <button class="slider--btn slider--btn__prev">&#10094;</button>
-  <div class="slider--container" id="sliderContainer">
-    <div class="slider--slide"><img src="slide1.jpg" alt="Slide 1" /></div>
-    <div class="slider--slide"><img src="slide2.jpg" alt="Slide 2" /></div>
-    <div class="slider--slide"><img src="slide3.jpg" alt="Slide 3" /></div>
-    <div class="slider--slide"><img src="slide4.jpg" alt="Slide 4" /></div>
+<div class="slider-container">
+  <div class="nav left" onclick="move(-1)">&#10094;</div>
+  <div id="slider" class="slider">
+    <img src="slide1.PNG" alt="Slide 1" />
+    <img src="slide2.PNG" alt="Slide 2" />
+    <img src="slide3.PNG" alt="Slide 3" />
+    <img src="slide4.PNG" alt="Slide 4" />
   </div>
-  <button class="slider--btn slider--btn__next">&#10095;</button>
+  <div class="nav right" onclick="move(1)">&#10095;</div>
   <div class="bias-light"></div>
 </div>
 
 <script>
-  const slider = document.getElementById('sliderContainer');
-  const slides = slider.children;
-  let current = 0;
+  const slider = document.getElementById("slider");
+  let index = 0;
 
-  function updateSlider() {
-    const angle = 360 / slides.length;
-    for (let i = 0; i < slides.length; i++) {
-      const rotation = angle * (i - current);
-      slides[i].style.transform = `rotateY(${rotation}deg) translateZ(400px)`;
-    }
+  function move(dir) {
+    const images = slider.children.length;
+    index = (index + dir + images) % images;
+    slider.style.transform = `translateX(${-index * 100}vw)`;
   }
-
-  document.querySelector('.slider--btn__prev').addEventListener('click', () => {
-    current = (current - 1 + slides.length) % slides.length;
-    updateSlider();
-  });
-
-  document.querySelector('.slider--btn__next').addEventListener('click', () => {
-    current = (current + 1) % slides.length;
-    updateSlider();
-  });
-
-  updateSlider();
 </script>
 
 </body>
