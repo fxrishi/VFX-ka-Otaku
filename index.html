@@ -148,6 +148,7 @@
       padding: 10px 15px;
       border-radius: 8px;
       font-size: 1rem;
+      cursor: pointer;
     }
 
     @media (max-width: 768px) {
@@ -156,6 +157,15 @@
         height: auto;
       }
     }
+
+    /* Fix blue outline on mouse click but keep for keyboard focus */
+    .user-is-tabbing .slide:focus {
+      outline: 2px solid #4D90FE;
+    }
+
+    .slide:focus {
+      outline: none;
+    }
   </style>
 </head>
 <body>
@@ -163,17 +173,17 @@
   <div class="slider-wrapper">
     <div class="nav left" onclick="prevSlide()">&#10094;</div>
     <div class="slider" id="slider">
-      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
-      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
-      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
-      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
-      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
-      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
-      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
-      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+      <div class="slide active" tabindex="0"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide" tabindex="0"><img src="slide2.PNG" alt="slide2"></div>
+      <div class="slide" tabindex="0"><img src="slide3.PNG" alt="slide3"></div>
+      <div class="slide" tabindex="0"><img src="slide4.PNG" alt="slide4"></div>
+      <div class="slide" tabindex="0"><img src="slide5.PNG" alt="slide5"></div>
+      <div class="slide" tabindex="0"><img src="slide6.PNG" alt="slide6"></div>
+      <div class="slide" tabindex="0"><img src="slide7.PNG" alt="slide7"></div>
+      <div class="slide" tabindex="0"><img src="slide8.PNG" alt="slide8"></div>
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
-    <button id="mute-btn">🔊 Music On</button>
+    <button id="mute-btn" aria-pressed="false">🔊 Music On</button>
   </div>
 
   <!-- Hidden SEO Text -->
@@ -188,6 +198,7 @@
   </audio>
 
   <script>
+    // Slider variables
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
     let current = 0;
@@ -253,7 +264,7 @@
       });
     });
 
-    // Swipe support
+    // Swipe support for mobile
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
@@ -262,7 +273,7 @@
       else if (startX - endX > 50) nextSlide();
     });
 
-    // Mouse wheel scroll
+    // Mouse wheel scroll with lock to avoid rapid firing
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
@@ -272,13 +283,32 @@
       setTimeout(() => wheelLock = false, 600);
     });
 
-    // Mute / Unmute
+    // Mute / Unmute button toggle
     const music = document.getElementById("bg-music");
     const muteBtn = document.getElementById("mute-btn");
+
     muteBtn.addEventListener("click", () => {
       music.muted = !music.muted;
       muteBtn.textContent = music.muted ? "🔇 Music Off" : "🔊 Music On";
+      muteBtn.setAttribute("aria-pressed", music.muted);
     });
+
+    // Accessibility: Show outline on keyboard navigation only
+    function handleFirstTab(e) {
+      if (e.key === 'Tab') {
+        document.body.classList.add('user-is-tabbing');
+        window.removeEventListener('keydown', handleFirstTab);
+        window.addEventListener('mousedown', handleMouseDownOnce);
+      }
+    }
+
+    function handleMouseDownOnce() {
+      document.body.classList.remove('user-is-tabbing');
+      window.removeEventListener('mousedown', handleMouseDownOnce);
+      window.addEventListener('keydown', handleFirstTab);
+    }
+
+    window.addEventListener('keydown', handleFirstTab);
   </script>
 </body>
 </html>
