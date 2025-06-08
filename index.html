@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="d9zI7g3PMNfbsgXp5BBuwHvPlBRWbt4RrVETpxE8900" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>3D Slide Portfolio</title>
+  <title>VFX Ka Otaku | 3D VFX Portfolio</title>
+  <meta name="description" content="Official portfolio site of VFX Ka Otaku – creative animations, VFX, and otaku-themed designs.">
+  <meta name="keywords" content="vfxkaotaku, vfx ka otaku, portfolio, 3d slide, animation, otaku, VFX design, anime portfolio" />
   <style>
     * {
       box-sizing: border-box;
@@ -159,6 +160,11 @@
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
   </div>
 
+  <!-- Hidden SEO Text -->
+  <div style="position:absolute; left:-9999px; top:-9999px;">
+    VFX Ka Otaku – creative VFX portfolio, anime art, 3D design, animation showcase, otaku-inspired visuals. vfxkaotaku
+  </div>
+
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
@@ -189,13 +195,11 @@
       updateSlider();
     }
 
-    // Scroll to center on page load
     window.addEventListener("load", () => {
       document.querySelector('.slider-wrapper').scrollIntoView({ behavior: 'smooth', block: 'center' });
       updateSlider();
     });
 
-    // Portrait warning
     function handleOrientation() {
       if (window.innerHeight > window.innerWidth) {
         document.body.classList.add("portrait-warning");
@@ -207,10 +211,9 @@
     window.addEventListener("resize", handleOrientation);
     handleOrientation();
 
-    // Toggle full screen on center slide click
     slides.forEach((slide, index) => {
       slide.addEventListener("click", () => {
-        if (index !== current) return; // Only respond to center slide
+        if (index !== current) return;
 
         if (!isFullscreen) {
           slide.style.position = "fixed";
