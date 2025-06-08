@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>VFX Otaku Slider</title>
+  <title>VFX Otaku 3D Slider</title>
   <style>
     * {
       margin: 0;
@@ -38,28 +38,40 @@
 
     .background-blur {
       position: fixed;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('slide1.PNG'); /* Initial background */
       background-size: cover;
       background-position: center;
-      filter: blur(30px) brightness(0.5);
+      filter: blur(30px) brightness(0.4);
       z-index: -1;
+      transition: background-image 0.5s ease;
+    }
+
+    .slider-wrapper {
+      perspective: 1000px;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .slider {
       display: flex;
-      width: 800%;
-      height: 100%;
-      transition: transform 0.5s ease-in-out;
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
     }
 
     .slide {
       flex: 0 0 100vw;
-      height: 100vh;
+      transform: scale(0.95);
+      transform-origin: center;
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: transform 0.5s ease;
     }
 
     .slide img {
@@ -67,7 +79,7 @@
       height: 90vh;
       object-fit: contain;
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
     }
 
     .nav {
@@ -93,7 +105,7 @@
     }
 
     @media (orientation: portrait) {
-      .slider, .nav {
+      .slider-wrapper, .nav {
         display: none;
       }
       #rotate-warning {
@@ -112,15 +124,17 @@
     <button onclick="nextSlide()">&#10095;</button>
   </div>
 
-  <div class="slider" id="slider">
-    <div class="slide"><img src="slide1.PNG" alt="slide1"></div>
-    <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
-    <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
-    <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
-    <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
-    <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
-    <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
-    <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+  <div class="slider-wrapper">
+    <div class="slider" id="slider">
+      <div class="slide"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
+      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
+      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
+      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
+      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
+      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
+      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+    </div>
   </div>
 
   <script>
@@ -130,7 +144,7 @@
     const bg = document.getElementById("bg-blur");
 
     function updateSlide() {
-      slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+      slider.style.transform = `translateX(-${currentSlide * 100}vw) rotateY(${currentSlide * 5}deg)`;
       bg.style.backgroundImage = `url(slide${currentSlide + 1}.PNG)`;
     }
 
@@ -144,7 +158,6 @@
       updateSlide();
     }
 
-    // Init first slide background
     updateSlide();
   </script>
 </body>
