@@ -25,7 +25,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('slide1.webp');
+      background-image: url('slide1.PNG');
       background-size: cover;
       background-position: center;
       filter: blur(25px) brightness(0.3);
@@ -110,6 +110,7 @@
       justify-content: center;
       transition: background 0.3s ease;
     }
+
     .slider--btn:hover {
       background: rgba(255,255,255,0.3);
     }
@@ -187,28 +188,28 @@
     </button>
     <div class="slides">
       <div class="slide" data-index="0" data-current>
-        <div class="slide__bg" style="background-image: url('slide1.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide1.PNG');"></div>
       </div>
       <div class="slide" data-index="1" data-next>
-        <div class="slide__bg" style="background-image: url('slide2.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide2.PNG');"></div>
       </div>
       <div class="slide" data-index="2">
-        <div class="slide__bg" style="background-image: url('slide3.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide3.PNG');"></div>
       </div>
       <div class="slide" data-index="3">
-        <div class="slide__bg" style="background-image: url('slide4.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide4.PNG');"></div>
       </div>
       <div class="slide" data-index="4">
-        <div class="slide__bg" style="background-image: url('slide5.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide5.PNG');"></div>
       </div>
       <div class="slide" data-index="5">
-        <div class="slide__bg" style="background-image: url('slide6.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide6.PNG');"></div>
       </div>
       <div class="slide" data-index="6">
-        <div class="slide__bg" style="background-image: url('slide7.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide7.PNG');"></div>
       </div>
       <div class="slide" data-index="7">
-        <div class="slide__bg" style="background-image: url('slide8.webp');"></div>
+        <div class="slide__bg" style="background-image: url('slide8.PNG');"></div>
       </div>
     </div>
 
@@ -262,6 +263,7 @@
       const next = current + 1 > lastIndex ? 0 : current + 1;
       updateSlides(next);
     });
+
     btnPrev.addEventListener('click', () => {
       const prev = current - 1 < 0 ? lastIndex : current - 1;
       updateSlides(prev);
