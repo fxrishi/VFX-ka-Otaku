@@ -198,7 +198,7 @@
 
   <div class="background-blur" id="bg-blur"></div>
   <div class="slider-wrapper">
-    <div class="nav left" onclick="prevSlide()">&#10094;</div>
+    <div class="nav left">&#10094;</div>
     <div class="slider" id="slider">
       <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
       <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
@@ -209,7 +209,7 @@
       <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
       <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
     </div>
-    <div class="nav right" onclick="nextSlide()">&#10095;</div>
+    <div class="nav right">&#10095;</div>
     <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 10v4h4l5 5V5L7 10H3z"/>
@@ -322,6 +322,7 @@
     window.addEventListener("resize", checkOrientation);
     window.addEventListener("load", checkOrientation);
 
+    // Fullscreen toggle logic + disable slide navigation when fullscreen
     slides.forEach((slide, index) => {
       slide.addEventListener("click", () => {
         if (index !== current) return;
@@ -343,19 +344,35 @@
       });
     });
 
+    // Wrap nextSlide and prevSlide with fullscreen check
+    function safeNextSlide() {
+      if (!isFullscreen) nextSlide();
+    }
+    function safePrevSlide() {
+      if (!isFullscreen) prevSlide();
+    }
+
+    // Attach nav button handlers (removed inline onclick in HTML)
+    document.querySelector(".nav.left").onclick = safePrevSlide;
+    document.querySelector(".nav.right").onclick = safeNextSlide;
+
+    // Touch swipe navigation
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
+      if (isFullscreen) return; // Disable swipe when fullscreen
       const endX = e.changedTouches[0].clientX;
-      if (endX - startX > 50) prevSlide();
-      else if (startX - endX > 50) nextSlide();
+      if (endX - startX > 50) safePrevSlide();
+      else if (startX - endX > 50) safeNextSlide();
     });
 
+    // Mouse wheel navigation
     let wheelLock = false;
     window.addEventListener("wheel", (e) => {
+      if (isFullscreen) return; // Disable wheel when fullscreen
       if (wheelLock) return;
-      if (e.deltaY > 0) nextSlide();
-      else if (e.deltaY < 0) prevSlide();
+      if (e.deltaY > 0) safeNextSlide();
+      else if (e.deltaY < 0) safePrevSlide();
       wheelLock = true;
       setTimeout(() => wheelLock = false, 600);
     });
