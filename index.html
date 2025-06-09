@@ -8,16 +8,11 @@
   <meta name="keywords" content="vfxkaotaku, vfx ka otaku, portfolio, 3d slide, animation, otaku, VFX design, anime portfolio" />
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100vw;
       height: 100dvh;
-      overflow-x: hidden;      /* ✅ Remove horizontal scroll */
-      overflow-y: hidden;      /* ✅ Remove vertical scroll if not needed */
+      overflow: hidden;
       font-family: sans-serif;
       background: #000;
       scroll-behavior: smooth;
@@ -25,27 +20,18 @@
     body.portrait-warning::before {
       content: "Please rotate your phone to landscape mode.";
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.8rem;
-      z-index: 9999;
-      text-align: center;
-      padding: 20px;
+      width: 100vw; height: 100vh;
+      background: #000; color: #fff;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 1.8rem; z-index: 9999;
+      text-align: center; padding: 20px;
     }
     .background-blur {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background-size: cover;
       background-position: center;
       filter: blur(40px) brightness(0.6);
@@ -54,56 +40,38 @@
     }
     .slider-wrapper {
       position: relative;
-      width: 100%;
-      height: 100dvh;
+      width: 100%; height: 100dvh;
       padding: 80px 0;
       perspective: 1500px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       z-index: 1;
-      touch-action: pan-y;
-      overflow: hidden; /* ✅ */
+      overflow: hidden;
     }
     .slider {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       justify-content: center;
-      overflow: hidden; /* ✅ */
+      overflow: hidden;
     }
     .slide {
       position: absolute;
       aspect-ratio: 16 / 9;
-      width: 58vw;
-      max-width: 900px;
+      width: 58vw; max-width: 900px;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
       opacity: 0;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -48%) scale(0.82);
       transition: transform 0.6s ease, opacity 0.4s ease;
       user-select: none;
       cursor: pointer;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .slide:focus {
-      outline: none;
     }
     .slide img {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
-      max-width: 100%;
-      max-height: 100%;
-      display: block;
       pointer-events: none;
-      user-select: none;
     }
     .slide.active {
       opacity: 1;
@@ -112,20 +80,17 @@
     }
     .slide.left {
       transform: translate(calc(-50% - 40vw), -48%) scale(0.8);
-      opacity: 1;
-      z-index: 1;
+      opacity: 1; z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
     .slide.right {
       transform: translate(calc(-50% + 40vw), -48%) scale(0.8);
-      opacity: 1;
-      z-index: 1;
+      opacity: 1; z-index: 1;
       filter: brightness(0.6) blur(2px);
     }
     .nav {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 50%; transform: translateY(-50%);
       font-size: 3.5rem;
       color: white;
       cursor: pointer;
@@ -136,49 +101,30 @@
     .nav.right { right: 20px; }
 
     #mute-btn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
+      position: absolute; bottom: 20px; right: 20px;
       z-index: 10;
-      width: 44px;
-      height: 44px;
-      background: rgba(0, 0, 0, 0.4);
-      border: none;
-      border-radius: 8px;
+      width: 44px; height: 44px;
+      background: rgba(0,0,0,0.4);
+      border: none; border-radius: 8px;
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background 0.3s ease;
+      display: flex; justify-content: center; align-items: center;
     }
-    #mute-btn:hover {
-      background: rgba(0, 0, 0, 0.7);
-    }
+    #mute-btn:hover { background: rgba(0,0,0,0.7); }
     #mute-btn svg {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       fill: white;
-      pointer-events: none;
-      user-select: none;
     }
-    #mute-btn.muted svg {
-      fill: #888;
-    }
+    #mute-btn.muted svg { fill: #888; }
 
     @media (max-width: 768px) {
-      .slide {
-        width: 90vw;
-        height: auto;
-      }
+      .slide { width: 90vw; height: auto; }
     }
 
     #loading-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       z-index: 10000;
       pointer-events: all;
       user-select: none;
@@ -186,8 +132,7 @@
     }
 
     #loading-video {
-      width: 200px;
-      height: auto;
+      width: 200px; height: auto;
       pointer-events: none;
     }
   </style>
@@ -213,10 +158,8 @@
     </div>
     <div class="nav right" onclick="nextSlide()">&#10095;</div>
 
-    <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 10v4h4l5 5V5L7 10H3z"/>
-      </svg>
+    <button id="mute-btn" aria-label="Toggle music">
+      <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3z"/></svg>
     </button>
   </div>
 
@@ -228,14 +171,43 @@
   <script>
     const slides = document.querySelectorAll(".slide");
     const bgBlur = document.getElementById("bg-blur");
+    const music = document.getElementById("bg-music");
+    const muteBtn = document.getElementById("mute-btn");
     let current = 0;
-    let isFullscreen = false;
 
     function updateSlider() {
       slides.forEach((slide, index) => {
         slide.classList.remove("active", "left", "right");
         if (index === current) {
           slide.classList.add("active");
-        } else if (index === (current - 1 + slides.
+          bgBlur.style.backgroundImage = `url(${slide.querySelector("img").src})`;
+        } else if (index === (current - 1 + slides.length) % slides.length) {
+          slide.classList.add("left");
+        } else if (index === (current + 1) % slides.length) {
+          slide.classList.add("right");
+        }
+      });
+    }
 
-                                   
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      updateSlider();
+    }
+
+    function prevSlide() {
+      current = (current - 1 + slides.length) % slides.length;
+      updateSlider();
+    }
+
+    window.addEventListener("load", () => {
+      document.getElementById("loading-overlay").style.display = "none";
+      updateSlider();
+    });
+
+    muteBtn.addEventListener("click", () => {
+      music.muted = !music.muted;
+      muteBtn.classList.toggle("muted", music.muted);
+    });
+  </script>
+</body>
+</html>
