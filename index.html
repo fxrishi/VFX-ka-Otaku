@@ -21,23 +21,25 @@
       scroll-behavior: smooth;
     }
 
-    /* Rotate warning box */
+    /* Rotate warning box - UPDATED */
     #rotate-warning {
       position: fixed;
-      top: 50%;
+      top: 10px;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
       color: #fff;
-      padding: 16px 20px;
-      border-radius: 12px;
-      font-size: 1rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
       text-align: center;
       z-index: 9999;
-      width: 80%;
-      max-width: 280px;
-      box-shadow: 0 0 12px rgba(255,255,255,0.2);
+      width: auto;
+      max-width: 220px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.15);
       display: none;
+      user-select: none;
+      pointer-events: none;
     }
 
     .background-blur {
