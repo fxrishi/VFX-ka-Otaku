@@ -3,185 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>VFX Ka Otaku | 3D VFX Portfolio</title>
+  <title>VFX Ka Otaku</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
     html, body {
-      width: 100vw; height: 100vh;
-      overflow: hidden; background: #000;
-      font-family: sans-serif;
-    }
-
-    body.portrait-warning::before {
-      content: "🔄 Rotate your phone to landscape mode";
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.85);
-      color: #fff; font-size: 1rem;
-      padding: 10px 16px; border-radius: 10px;
-      text-align: center; z-index: 9999;
-    }
-
-    #loading-overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000; display: flex;
-      align-items: center; justify-content: center;
-      z-index: 9998;
-    }
-
-    #loading-video {
-      width: 200px; height: auto;
-      pointer-events: none;
-    }
-
-    .slider-wrapper {
-      position: relative; width: 100%; height: 100%;
-      display: flex; justify-content: center; align-items: center;
-      perspective: 1200px; z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
     }
 
     .slider {
-      position: relative; display: flex; align-items: center;
-      justify-content: center; width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
-    .slide {
-      position: absolute; aspect-ratio: 16/9;
-      width: 60vw; max-width: 900px;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -48%) scale(0.82);
-      border-radius: 20px; overflow: hidden;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-      opacity: 0; transition: transform 0.6s ease, opacity 0.4s ease;
+    #loading-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loading-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .mute-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .slide img {
-      width: 100%; height: 100%; object-fit: cover;
-      pointer-events: none;
+    .mute-button.muted::after {
+      content: ' 🔇';
     }
 
-    .slide.active {
-      opacity: 1;
-      transform: translate(-50%, -48%) scale(0.92);
-      z-index: 2;
+    .mute-button:not(.muted)::after {
+      content: ' 🔊';
     }
 
-    .slide.left {
-      transform: translate(calc(-50% - 50vw), -48%) scale(0.8);
-      opacity: 1; z-index: 1;
-      filter: brightness(0.5) blur(2px);
-    }
-
-    .slide.right {
-      transform: translate(calc(-50% + 50vw), -48%) scale(0.8);
-      opacity: 1; z-index: 1;
-      filter: brightness(0.5) blur(2px);
-    }
-
-    .nav {
-      position: absolute; top: 50%;
-      transform: translateY(-50%);
-      font-size: 3rem; color: white;
-      cursor: pointer; z-index: 5;
-      user-select: none;
-    }
-
-    .nav.left { left: 20px; }
-    .nav.right { right: 20px; }
-
-    #bg-music {
-      display: none;
+    body.portrait-warning::before {
+      content: "Please rotate your phone to landscape mode";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 280px;
+      background: rgba(0, 0, 0, 0.95);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      z-index: 9999;
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loading-overlay">
-    <video id="loading-video" autoplay muted playsinline></video>
+    <video id="loading-video" muted playsinline></video>
   </div>
 
-  <!-- Slider Content -->
-  <div class="slider-wrapper">
-    <div class="nav left" onclick="prevSlide()">&#10094;</div>
-    <div class="slider" id="slider">
-      <div class="slide active"><img src="slide1.PNG" alt="1" /></div>
-      <div class="slide"><img src="slide2.PNG" alt="2" /></div>
-      <div class="slide"><img src="slide3.PNG" alt="3" /></div>
-      <div class="slide"><img src="slide4.PNG" alt="4" /></div>
-    </div>
-    <div class="nav right" onclick="nextSlide()">&#10095;</div>
+  <div class="slider" id="slider">
+    <!-- Your slider content here -->
+    <h1>Welcome to VFX Ka Otaku</h1>
   </div>
 
-  <audio id="bg-music" autoplay muted loop>
-    <source src="assets/music/upgrade.mp3" type="audio/mpeg">
-  </audio>
+  <audio id="bg-music" src="assets/music.mp3" autoplay loop muted></audio>
+  <button id="mute-btn" class="mute-button muted" aria-pressed="true">Sound</button>
 
   <script>
-    const slides = document.querySelectorAll(".slide");
-    let current = 0;
-
     function updateSlider() {
-      slides.forEach((slide, index) => {
-        slide.classList.remove("active", "left", "right");
-        if (index === current) slide.classList.add("active");
-        else if (index === (current - 1 + slides.length) % slides.length) slide.classList.add("left");
-        else if (index === (current + 1) % slides.length) slide.classList.add("right");
-      });
+      // your slider logic (if needed)
     }
 
-    function nextSlide() {
-      current = (current + 1) % slides.length;
-      updateSlider();
-    }
-
-    function prevSlide() {
-      current = (current - 1 + slides.length) % slides.length;
-      updateSlider();
-    }
-
-    // Orientation Lock + Landscape Detect
     function handleOrientation() {
       const isPortrait = window.innerHeight > window.innerWidth;
       document.body.classList.toggle("portrait-warning", isPortrait);
-      if (!isPortrait && isMobile && !videoStarted) {
-        startLoadingVideo();
+
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const loadingVideo = document.getElementById('loading-video');
+
+      if (!isPortrait && loadingOverlay.style.display !== 'none') {
+        loadingVideo.play(); // Only play when in landscape
+      } else {
+        loadingVideo.pause();
+        loadingVideo.currentTime = 0;
       }
     }
 
-    // Mobile Detection
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    let videoStarted = false;
-
-    // Loading WebM Control
-    const loadingOverlay = document.getElementById("loading-overlay");
-    const loadingVideo = document.getElementById("loading-video");
-
-    function startLoadingVideo() {
-      if (videoStarted) return;
-      videoStarted = true;
-
-      loadingVideo.src = "assets/loading.webm";
-      loadingVideo.loop = false;
-      loadingVideo.play();
-
-      loadingVideo.onended = () => {
-        loadingOverlay.style.transition = "opacity 0.8s ease";
-        loadingOverlay.style.opacity = 0;
-        setTimeout(() => loadingOverlay.remove(), 800);
-      };
-    }
-
-    // Start audio on interaction if needed
-    const music = document.getElementById("bg-music");
-    window.addEventListener("click", () => { music.muted = false; music.play(); }, { once: true });
-    window.addEventListener("touchstart", () => { music.muted = false; music.play(); }, { once: true });
-
     window.addEventListener("resize", handleOrientation);
+
     window.addEventListener("load", () => {
       updateSlider();
       handleOrientation();
+
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const loadingVideo = document.getElementById('loading-video');
+      const music = document.getElementById("bg-music");
+      const muteBtn = document.getElementById("mute-btn");
+
+      loadingVideo.src = 'assets/loading.webm';
+      loadingVideo.loop = false;
+      loadingVideo.playbackRate = 1;
+      loadingVideo.autoplay = false;
+      loadingVideo.muted = true;
+      loadingVideo.playsInline = true;
+
+      let playSequence = [1, 2, 2, 1];
+      let seqIndex = 0;
+
+      loadingVideo.addEventListener('ended', () => {
+        seqIndex++;
+        if (seqIndex >= playSequence.length) {
+          loadingOverlay.style.transition = 'opacity 0.8s ease';
+          loadingOverlay.style.opacity = 0;
+          setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            document.body.style.overflow = 'hidden';
+          }, 800);
+          return;
+        }
+        loadingVideo.playbackRate = playSequence[seqIndex];
+        loadingVideo.play();
+      });
+
+      music.play().then(() => {
+        setTimeout(() => {
+          music.muted = false;
+          muteBtn.classList.remove("muted");
+          muteBtn.setAttribute("aria-pressed", "false");
+        }, 100);
+      }).catch(() => {
+        window.addEventListener("click", unmuteOnInteraction, { once: true });
+        window.addEventListener("touchstart", unmuteOnInteraction, { once: true });
+      });
+
+      function unmuteOnInteraction() {
+        music.muted = false;
+        music.play();
+        muteBtn.classList.remove("muted");
+        muteBtn.setAttribute("aria-pressed", "false");
+      }
+
+      muteBtn.addEventListener("click", () => {
+        music.muted = !music.muted;
+        muteBtn.classList.toggle("muted", music.muted);
+        muteBtn.setAttribute("aria-pressed", music.muted.toString());
+      });
     });
   </script>
 </body>
