@@ -3,160 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>VFX Ka Otaku</title>
+  <title>VFX Ka Otaku | 3D VFX Portfolio</title>
+  <meta name="description" content="Official portfolio site of VFX Ka Otaku – creative animations, VFX, and otaku-themed designs.">
+  <meta name="keywords" content="vfxkaotaku, vfx ka otaku, portfolio, 3d slide, animation, otaku, VFX design, anime portfolio" />
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-
     html, body {
       width: 100vw;
-      height: 100vh;
+      height: 100dvh;
       overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: sans-serif;
       background: #000;
-      color: #fff;
+      scroll-behavior: smooth;
     }
 
-    .slider {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    #loading-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #000;
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #loading-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .mute-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10000;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: #fff;
-      font-size: 18px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .mute-button.muted::after {
-      content: ' 🔇';
-    }
-
-    .mute-button:not(.muted)::after {
-      content: ' 🔊';
-    }
-
-    body.portrait-warning::before {
-      content: "Please rotate your phone to landscape mode";
+    /* Rotate warning box */
+    #rotate-warning {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80vw;
-      max-width: 280px;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(0, 0, 0, 0.9);
       color: #fff;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      text-align: center;
+      z-index: 9999;
+      width: 80%;
+      max-width: 280px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.2);
+      display: none;
+    }
+
+    .background-blur {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(40px) brightness(0.6);
+      z-index: 0;
+      transition: background-image 0.5s ease-in-out;
+    }
+    .slider-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      padding: 80px 0;
+      perspective: 1500px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1rem;
-      z-index: 9999;
-      text-align: center;
-      padding: 14px;
-      border-radius: 12px;
-      border: 2px solid #fff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      z-index: 1;
+      touch-action: pan-y;
+    }
+    .slider {
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+    }
+    .slide {
+      position: absolute;
+      aspect-ratio: 16 / 9;
+      width: 58vw;
+      max-width: 900px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -48%) scale(0.82);
+      transition: transform 0.6s ease, opacity 0.4s ease;
+      user-select: none;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .slide:focus {
+      outline: none;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translate(-50%, -48%) scale(0.92);
+      z-index: 2;
+    }
+    .slide.left {
+      transform: translate(calc(-50% - 50vw), -48%) scale(0.8);
+      opacity: 1;
+      z-index: 1;
+      filter: brightness(0.6) blur(2px);
+    }
+    .slide.right {
+      transform: translate(calc(-50% + 50vw), -48%) scale(0.8);
+      opacity: 1;
+      z-index: 1;
+      filter: brightness(0.6) blur(2px);
+    }
+    .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 3.5rem;
+      color: white;
+      cursor: pointer;
+      z-index: 3;
+      user-select: none;
+    }
+    .nav.left { left: 20px; }
+    .nav.right { right: 20px; }
+    #mute-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.4);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    #mute-btn:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    #mute-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      pointer-events: none;
+      user-select: none;
+    }
+    #mute-btn.muted svg {
+      fill: #888;
+    }
+    @media (max-width: 768px) {
+      .slide {
+        width: 90vw;
+        height: auto;
+      }
+    }
+
+    #loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      pointer-events: all;
+      user-select: none;
+      flex-direction: column;
+    }
+    #loading-video {
+      width: 200px;
+      height: auto;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
+  <!-- Rotate Warning -->
+  <div id="rotate-warning">Please rotate your phone to landscape mode.</div>
+
+  <!-- Loading overlay -->
   <div id="loading-overlay">
-    <video id="loading-video" muted playsinline></video>
+    <video id="loading-video" autoplay muted playsinline></video>
   </div>
 
-  <div class="slider" id="slider">
-    <!-- Your slider content here -->
-    <h1>Welcome to VFX Ka Otaku</h1>
+  <div class="background-blur" id="bg-blur"></div>
+  <div class="slider-wrapper">
+    <div class="nav left" onclick="prevSlide()">&#10094;</div>
+    <div class="slider" id="slider">
+      <div class="slide active"><img src="slide1.PNG" alt="slide1"></div>
+      <div class="slide"><img src="slide2.PNG" alt="slide2"></div>
+      <div class="slide"><img src="slide3.PNG" alt="slide3"></div>
+      <div class="slide"><img src="slide4.PNG" alt="slide4"></div>
+      <div class="slide"><img src="slide5.PNG" alt="slide5"></div>
+      <div class="slide"><img src="slide6.PNG" alt="slide6"></div>
+      <div class="slide"><img src="slide7.PNG" alt="slide7"></div>
+      <div class="slide"><img src="slide8.PNG" alt="slide8"></div>
+    </div>
+    <div class="nav right" onclick="nextSlide()">&#10095;</div>
+    <button id="mute-btn" aria-pressed="false" aria-label="Toggle music" title="Toggle music">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 10v4h4l5 5V5L7 10H3z"/>
+      </svg>
+    </button>
   </div>
 
-  <audio id="bg-music" src="assets/music.mp3" autoplay loop muted></audio>
-  <button id="mute-btn" class="mute-button muted" aria-pressed="true">Sound</button>
+  <audio id="bg-music" autoplay muted loop>
+    <source src="assets/music/upgrade.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
+    const slides = document.querySelectorAll(".slide");
+    const bgBlur = document.getElementById("bg-blur");
+    let current = 0;
+    let isFullscreen = false;
+
     function updateSlider() {
-      // your slider logic (if needed)
+      slides.forEach((slide, index) => {
+        slide.classList.remove("active", "left", "right");
+        if (index === current) {
+          slide.classList.add("active");
+        } else if (index === (current - 1 + slides.length) % slides.length) {
+          slide.classList.add("left");
+        } else if (index === (current + 1) % slides.length) {
+          slide.classList.add("right");
+        }
+      });
+      bgBlur.style.backgroundImage = `url('${slides[current].querySelector("img").src}')`;
     }
 
-    function handleOrientation() {
-      const isPortrait = window.innerHeight > window.innerWidth;
-      document.body.classList.toggle("portrait-warning", isPortrait);
-
-      const loadingOverlay = document.getElementById('loading-overlay');
-      const loadingVideo = document.getElementById('loading-video');
-
-      if (!isPortrait && loadingOverlay.style.display !== 'none') {
-        loadingVideo.play(); // Only play when in landscape
-      } else {
-        loadingVideo.pause();
-        loadingVideo.currentTime = 0;
-      }
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      updateSlider();
     }
 
-    window.addEventListener("resize", handleOrientation);
+    function prevSlide() {
+      current = (current - 1 + slides.length) % slides.length;
+      updateSlider();
+    }
 
     window.addEventListener("load", () => {
       updateSlider();
-      handleOrientation();
 
-      const loadingOverlay = document.getElementById('loading-overlay');
-      const loadingVideo = document.getElementById('loading-video');
       const music = document.getElementById("bg-music");
       const muteBtn = document.getElementById("mute-btn");
-
-      loadingVideo.src = 'assets/loading.webm';
-      loadingVideo.loop = false;
-      loadingVideo.playbackRate = 1;
-      loadingVideo.autoplay = false;
-      loadingVideo.muted = true;
-      loadingVideo.playsInline = true;
-
-      let playSequence = [1, 2, 2, 1];
-      let seqIndex = 0;
-
-      loadingVideo.addEventListener('ended', () => {
-        seqIndex++;
-        if (seqIndex >= playSequence.length) {
-          loadingOverlay.style.transition = 'opacity 0.8s ease';
-          loadingOverlay.style.opacity = 0;
-          setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-            document.body.style.overflow = 'hidden';
-          }, 800);
-          return;
-        }
-        loadingVideo.playbackRate = playSequence[seqIndex];
-        loadingVideo.play();
-      });
 
       music.play().then(() => {
         setTimeout(() => {
@@ -178,9 +276,86 @@
 
       muteBtn.addEventListener("click", () => {
         music.muted = !music.muted;
-        muteBtn.classList.toggle("muted", music.muted);
-        muteBtn.setAttribute("aria-pressed", music.muted.toString());
+        if (music.muted) {
+          muteBtn.classList.add("muted");
+          muteBtn.setAttribute("aria-pressed", "true");
+        } else {
+          muteBtn.classList.remove("muted");
+          muteBtn.setAttribute("aria-pressed", "false");
+        }
       });
+
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const loadingVideo = document.getElementById('loading-video');
+      loadingVideo.src = 'assets/loading.webm';
+      loadingVideo.loop = false;
+      loadingVideo.playbackRate = 1;
+      loadingVideo.autoplay = true;
+      loadingVideo.muted = true;
+      loadingVideo.playsInline = true;
+      let playSequence = [1, 2, 2, 1];
+      let seqIndex = 0;
+
+      loadingVideo.play();
+      loadingVideo.addEventListener('ended', () => {
+        seqIndex++;
+        if (seqIndex >= playSequence.length) {
+          loadingOverlay.style.transition = 'opacity 0.8s ease';
+          loadingOverlay.style.opacity = 0;
+          setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            document.body.style.overflow = 'hidden';
+          }, 800);
+          return;
+        }
+        loadingVideo.playbackRate = playSequence[seqIndex];
+        loadingVideo.play();
+      });
+    });
+
+    function checkOrientation() {
+      const isPortrait = window.innerHeight > window.innerWidth;
+      document.getElementById("rotate-warning").style.display = isPortrait ? "block" : "none";
+    }
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("load", checkOrientation);
+
+    slides.forEach((slide, index) => {
+      slide.addEventListener("click", () => {
+        if (index !== current) return;
+        if (!isFullscreen) {
+          slide.style.position = "fixed";
+          slide.style.top = "50%";
+          slide.style.left = "50%";
+          slide.style.transform = "translate(-50%, -50%) scale(1.1)";
+          slide.style.zIndex = "1000";
+          slide.style.transition = "transform 0.4s ease";
+          document.body.style.overflow = "hidden";
+          isFullscreen = true;
+        } else {
+          slide.removeAttribute("style");
+          updateSlider();
+          document.body.style.overflow = "hidden";
+          isFullscreen = false;
+        }
+      });
+    });
+
+    let startX = 0;
+    document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+    document.addEventListener("touchend", e => {
+      const endX = e.changedTouches[0].clientX;
+      if (endX - startX > 50) prevSlide();
+      else if (startX - endX > 50) nextSlide();
+    });
+
+    let wheelLock = false;
+    window.addEventListener("wheel", (e) => {
+      if (wheelLock) return;
+      if (e.deltaY > 0) nextSlide();
+      else if (e.deltaY < 0) prevSlide();
+      wheelLock = true;
+      setTimeout(() => wheelLock = false, 600);
     });
   </script>
 </body>
