@@ -389,6 +389,13 @@
       wheelLock = true;
       setTimeout(() => wheelLock = false, 600);
     });
+    // ⌨️ Arrow key navigation
+      document.addEventListener("keydown", (e) => {
+      if (isFullscreen) return;
+      if (e.key === "ArrowLeft") safePrevSlide();
+      if (e.key === "ArrowRight") safeNextSlide();
+});
+
   </script>
 </body>
 </html>
